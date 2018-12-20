@@ -5,10 +5,7 @@ const getParsedSpreadsheet = (req, res) => {
     // collect and clean the parsed json data
     // parses clean data into csv
     // responds csv
-
     res.status(200).send('this will be a csv file');
 };
-
-
 
 module.exports = {getParsedSpreadsheet};
