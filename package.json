@@ -1,0 +1,25 @@
+{
+  "name": "dadosjusbr-parser",
+  "version": "1.0.0",
+  "description": "A http API that parses judges payments .xls or .xlsx spreadsheets into a nice csv",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dadosjusbr/parser.git"
+  },
+  "keywords": [
+    "dadosjusbr"
+  ],
+  "author": "Vinicius A Agostini",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dadosjusbr/parser/issues"
+  },
+  "homepage": "https://github.com/dadosjusbr/parser#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
