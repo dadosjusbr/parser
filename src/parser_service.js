@@ -1,5 +1,5 @@
 const http = require('http');
-
+const xlsxService = require('./xlsx_service');
 /**
  * Fetch the spreadsheet from the given url.
  * 
@@ -32,7 +32,7 @@ const getParsedSpreadsheet = async (req, res) => {
 
     const spreadSheetBuffer = await _fetchSpreadshet(spreadsheetUrl);
 
-    // use this buffer...
+    const spreadSheet = xlsxService.convertSpreadsheetToJson(spreadSheetBuffer);
 
     res.set('Content-Type', 'text/csv');
     res.status(200).send('this will be a csv file');
