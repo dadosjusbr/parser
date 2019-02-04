@@ -20,12 +20,9 @@ describe('xlsx_service convertpreadsheetToJson should', () => {
 
     it('convert empty spreadsheet into json correctly', async () => {
         const bufferedSpreadsheet = await getSpreadsheet(EMPTY_SPREADSHEET_PATH);
-        
         const tab1 = [];
         const expectedResult = [tab1];
-        
         const result = xslxService.convertSpreadsheetToJson(bufferedSpreadsheet);
-        
         expect(result).toEqual(expectedResult);
     });
 
