@@ -3,6 +3,7 @@ const {
     PLAIN_SPREADSHEET_PATH, 
     EMPTY_SPREADSHEET_PATH, 
     CORRUPTED_SPREADSHEET_PATH,
+    PASSWORD_PROTECTED_SPREADSHEET_PATH,
     getSpreadsheet } = require('./spreadsheets');
 
 describe('xlsx_service convertpreadsheetToJson should', () => {
@@ -31,6 +32,14 @@ describe('xlsx_service convertpreadsheetToJson should', () => {
         try {
             xslxService.convertSpreadsheetToJson(bufferedSpreadsheet);
             fail('an error should have been thrown by the function since the file is corrupted');
+        } catch (e) {}
+    });
+
+    it('thrown an erro when the spreadsheet file is password protected', async () => {
+        const bufferedSpreadsheet = await getSpreadsheet(PASSWORD_PROTECTED_SPREADSHEET_PATH);
+        try {
+            xslxService.convertSpreadsheetToJson(bufferedSpreadsheet);
+            fail('an error should have been thrown by the function since the file is password protected');
         } catch (e) {}
     });
 });
