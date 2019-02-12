@@ -1,6 +1,6 @@
 const http = require('http');
 const xlsxService = require('./xlsx_service');
-const APIError = require('./APIError');
+const APIError = require('./api_error');
 const httpStatus = require('http-status');
 
 /**

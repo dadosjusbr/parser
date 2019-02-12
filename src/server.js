@@ -1,6 +1,5 @@
 const express = require('express');
 const httpStatus = require('http-status');
-const APIError = require('./APIError');
 
 const app = express();
 

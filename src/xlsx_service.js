@@ -1,5 +1,5 @@
 const xlsx = require('xlsx');
-const APIError = require('./APIError');
+const APIError = require('./api_error');
 const httpStatus = require('http-status');
 
 const convertSpreadsheetToJson = spreadsheetBuffer => {

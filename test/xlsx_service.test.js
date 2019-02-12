@@ -1,5 +1,5 @@
 const xslxService = require('../src/xlsx_service');
-const APIError = require('../src/APIError');
+const APIError = require('../src/api_error');
 const httpStatus = require('http-status');
 const {
   PLAIN_SPREADSHEET_PATH,
