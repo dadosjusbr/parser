@@ -38,8 +38,17 @@ const getParsedSpreadsheet = async (req, res, next) => {
     res.set('Content-Type', 'text/csv');
     res.status(200).send('this will be a csv file');
   } catch (e) {
-    next(e);
+    handleError(e, res);
   }
+};
+
+const handleError = (err, res) => {
+  const status = err instanceof APIError ? err.status : httpStatus.INTERNAL_SERVER_ERROR;
+  
+  res.status(status).json({
+    message: err.message,
+    stack: err.stack
+  });
 };
 
 module.exports = { getParsedSpreadsheet, _fetchSpreadshet };
