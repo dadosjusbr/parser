@@ -29,6 +29,7 @@ describe('GET /', () => {
   it('Should response bad request status code when no url is passed in query params', async () => {
     const response = await request.get('/');
     expect(response.statusCode).toBe(400);
-    expect(response.text).toEqual('Invalid spreadsheet url!');
+    const responseObj = JSON.parse(response.text);
+    expect(responseObj.message).toEqual('Invalid spreadsheet url!');
   });
 });

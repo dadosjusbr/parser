@@ -1,5 +1,8 @@
 const http = require('http');
 const xlsxService = require('./xlsx_service');
+const APIError = require('./api_error');
+const httpStatus = require('http-status');
+
 /**
  * Fetch the spreadsheet from the given url.
  * 
@@ -20,25 +23,32 @@ const _fetchSpreadshet = url =>
       });
     })
     .on('error', err => {
-      reject(err);
+      reject(new APIError(err.message, httpStatus.BAD_REQUEST, err.stack));
     });
   });
 
-const getParsedSpreadsheet = async (req, res) => {
+const getParsedSpreadsheet = async (req, res, next) => {
+  const { spreadsheetUrl } = req.query;
   try {
     //TODO: validate spreadsheet url properly;
-    const { spreadsheetUrl } = req.query;
-    if (!spreadsheetUrl) throw new Error('Invalid spreadsheet url!');
-
+    if (!spreadsheetUrl) throw new APIError('Invalid spreadsheet url!', httpStatus.BAD_REQUEST);
     const spreadSheetBuffer = await _fetchSpreadshet(spreadsheetUrl);
-
     const spreadSheet = xlsxService.convertSpreadsheetToJson(spreadSheetBuffer);
-
+    
     res.set('Content-Type', 'text/csv');
     res.status(200).send('this will be a csv file');
   } catch (e) {
-    res.status(400).send(e.message);
+    handleError(e, res);
   }
+};
+
+const handleError = (err, res) => {
+  const status = err instanceof APIError ? err.status : httpStatus.INTERNAL_SERVER_ERROR;
+  
+  res.status(status).json({
+    message: err.message,
+    stack: err.stack
+  });
 };
 
 module.exports = { getParsedSpreadsheet, _fetchSpreadshet };
