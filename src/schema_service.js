@@ -6,7 +6,5 @@ const schema = require('./schema');
 const getSchema = async (req, res) => {
   res.json(schema);
 };
-
-const exportedFunctions = { getSchema }; 
-
-module.exports = exportedFunctions;
+ 
+module.exports = { getSchema };
