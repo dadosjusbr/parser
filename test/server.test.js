@@ -3,6 +3,7 @@ const nock = require('nock');
 const app = require('../src/server');
 
 const schemaService = require('../src/schema_service.js');
+const schema = require('../src/schema.js');
 
 const server = app.listen();
 const request = supertest.agent(server)
@@ -33,13 +34,8 @@ describe('GET /', () => {
 
 describe('GET /schema', () => {
   it('should respond success status code and the loaded schema', async () => {
-    const schemaMock = { version: '3', fields: ['a', 'b'] };
-    schemaService._loadSchema = jest.fn();
-    schemaService._loadSchema.mockReturnValue(Promise.resolve(schemaMock))
-
     const response = await request.get(`/schema`);
-    
     expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.text)).toEqual(schemaMock);
+    expect(JSON.parse(response.text)).toEqual(schema);
   });
 });
