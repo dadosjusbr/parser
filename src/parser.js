@@ -6,13 +6,13 @@
 const _getHeaderLine = sheet => {
   const headerKeywords = ['cpf', 'nome'];
   let firstDataLine;
-
+  const stringfy = value => '' + value;
   const found = sheet.some((line, lineNumber) => {
     firstDataLine = lineNumber + 1;
-    return line.length >= headerKeywords.length && headerKeywords.every((key, index) =>
-      !!line[index] && line[index].toLowerCase().includes(key));
+    const isHeader = line.length >= headerKeywords.length && headerKeywords.every((key, index) =>
+      !!line[index] && stringfy(line[index]).toLowerCase().includes(key));
+    return isHeader;
   });
-
   return found ? firstDataLine : undefined;
 };
 

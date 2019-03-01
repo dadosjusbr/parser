@@ -49,4 +49,12 @@ describe('parser _getHeaderLine ', () => {
     ];
     expect(parser._getHeaderLine(sheetMock)).toBe(sheetMock.length);    
   });
+
+  it('should return the line containing the sheet header even when other cells have numeric values', () => {
+    const sheetMock = [
+      [1, 2],
+      ['CPF', 'Nome']      
+    ];
+    expect(parser._getHeaderLine(sheetMock)).toBe(sheetMock.length);
+  });
 });
