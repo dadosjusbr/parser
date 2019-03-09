@@ -58,3 +58,36 @@ describe('parser _getHeaderLine ', () => {
     expect(parser._getHeaderLine(sheetMock)).toBe(sheetMock.length);
   });
 });
+
+describe('parser _getSheet', () => {
+  it('should return an empty array when an empty spreadsheet is passed', () => {
+    expect(parser._getSheet('asdf', {})).toEqual([]);
+  });
+
+  it('should return the last sheet when an empty keyword is passed', () => {
+    const spreadsheetMock = {
+      firstSheet: [['a'],['b']],
+      secondSheet: [['c'],['d']],
+      lastSheet: [['e'],['f']]
+    };
+    expect(parser._getSheet('', spreadsheetMock)).toBe(spreadsheetMock.lastSheet);
+  });
+
+  it('should return the sheet that matches with the passed keyword in the name', () => {
+    const spreadsheetMock = {
+      anyName: [['a'],['b']],
+      theRightOne: [['c'],['d']],
+      otherName: [['e'],['f']]
+    };
+    expect(parser._getSheet('right', spreadsheetMock)).toBe(spreadsheetMock.theRightOne);
+  });
+
+  it('should return the sheet that matches with the passed keyword in the title', () => {
+    const spreadsheetMock = {
+      anyName: [['a'],['b']],
+      someName: [['c'],['d']],
+      otherName: [['im am the right one'],['f']]
+    };
+    expect(parser._getSheet('im am the', spreadsheetMock)).toBe(spreadsheetMock.otherName);
+  });
+});
