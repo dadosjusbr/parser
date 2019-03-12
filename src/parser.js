@@ -1,4 +1,4 @@
-const { containsSubstring } = require('./util');
+const { containsSubstring } = require('./string_utils');
 
 /**
  * Keywords contained on each name or title.  
