@@ -53,12 +53,12 @@ const _getSheet = (keyword, spreadSheet) =>
 const _getSheetData = (sheetModel, sheet) => {
   const headerLine = _getHeaderLine(sheet);
   return sheet
-  .filter((line, index) => index >= headerLine && line.length >= sheetModel.length)
-  .map(line =>
-    sheetModel.reduce((sheetData, field, index) => {
-      sheetData[field.fieldName] = line[index]; //TODO: clean data according to its type
-      return {...sheetData};
-    }, {}));
+    .filter((line, index) => index >= headerLine && line.length >= sheetModel.length)
+    .map(line =>
+      sheetModel.reduce((sheetData, field, index) => {
+        sheetData[field.fieldName] = line[index]; //TODO: clean data according to its type
+        return {...sheetData};
+      }, {}));
 };
 
 /**
