@@ -1,4 +1,6 @@
 const parser = require('../src/parser');
+const { getSpreadsheet, SIMPLE_DATA_SPREADSHEET_PATH } = require('./spreadsheets');
+const { convertSpreadsheetToJson } = require('../src/xlsx_service');
 
 describe('paser parse', () => {
   it('shoul throw not implemented error', () => {
@@ -89,5 +91,66 @@ describe('parser _getSheet', () => {
       otherName: [['im am the right one'],['f']]
     };
     expect(parser._getSheet('im am the', spreadsheetMock)).toBe(spreadsheetMock.otherName);
+  });
+});
+
+describe('paser _getSheetData', () => {
+  it('should return an empty array if the sheet has no data', () => {
+    const sheetMock = [
+      ['asdf', 'asdf'], 
+      ['fsda', 'fasd'], 
+      ['cpf', 'nome'], //header 
+      [], 
+      [] 
+    ];
+
+    const sheetModel = [
+      {fieldName: 'campo1'},
+      {fieldName: 'campo2'},
+    ];
+
+    expect(parser._getSheetData(sheetModel, sheetMock)).toEqual([]);
+    expect(parser._getSheetData(sheetModel, [])).toEqual([]);
+  });
+
+  it('should convert the sheet into an array of data', () => {
+    const sheetMock = [
+      ['asdf', 'asdf'], 
+      ['fsda', 'fasd'], 
+      ['cpf', 'nome'], //header
+      ['dados11', 'dados12'], 
+      ['dados21', 'dados22'], 
+      ['dados31', 'dados32'], 
+      ['dados41'], 
+      [] 
+    ];
+    const sheetModel = [
+      {fieldName: 'campo1'},
+      {fieldName: 'campo2'},
+    ];
+
+    const data = parser._getSheetData(sheetModel, sheetMock);
+    
+    expect(data).toEqual([
+      {campo1: 'dados11', campo2: 'dados12'},
+      {campo1: 'dados21', campo2: 'dados22'},
+      {campo1: 'dados31', campo2: 'dados32'}
+    ]);
+  });
+});
+
+describe('parser _getContrachequeData', () => {
+  it('should collect the contracheque data from the spreadsheet', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(SIMPLE_DATA_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+
+    const expectedContrachequeData = [
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 41, diarias: 81, direitos_eventuais: 792, direitos_pessoias: 63, imposto_de_renda: 31, indenizacoes: 459, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome1", previdencia_publica: 21, remuneracao_do_orgao_de_origem: 71, rendimento_liquido: 1264, retencao_por_teto_constitucional: 51, subsidio: 11, total_de__rendimentos: 1325, total_de_descontos: 61}, 
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 42, diarias: 82, direitos_eventuais: 804, direitos_pessoias: 66, imposto_de_renda: 32, indenizacoes: 468, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome2", previdencia_publica: 22, remuneracao_do_orgao_de_origem: 72, rendimento_liquido: 1288, retencao_por_teto_constitucional: 52, subsidio: 12, total_de__rendimentos: 1350, total_de_descontos: 62}, 
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 43, diarias: 83, direitos_eventuais: 816, direitos_pessoias: 69, imposto_de_renda: 33, indenizacoes: 477, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome3", previdencia_publica: 23, remuneracao_do_orgao_de_origem: 73, rendimento_liquido: 1312, retencao_por_teto_constitucional: 53, subsidio: 13, total_de__rendimentos: 1375, total_de_descontos: 63}, 
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 44, diarias: 84, direitos_eventuais: 828, direitos_pessoias: 72, imposto_de_renda: 34, indenizacoes: 486, lotacao: "CARTÓRIO ELEITORAL", nome: "nome4", previdencia_publica: 24, remuneracao_do_orgao_de_origem: 74, rendimento_liquido: 1336, retencao_por_teto_constitucional: 54, subsidio: 14, total_de__rendimentos: 1400, total_de_descontos: 64}
+    ];
+
+    expect(parser._getContrachequeData(spreadsheet)).toEqual(expectedContrachequeData);
   });
 });
