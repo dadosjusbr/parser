@@ -45,6 +45,19 @@ describe('parser _getHeaderLine ', () => {
     });
   });
 
+  it('should return the line containing the sheet header even when more than one line matches with the header', () => {
+    const sheetMock = [
+      ['beforeHeader1', 'beforeHeader2'],
+      ['cpf', 'nome'],
+      ['cpf', 'nome'],
+      ['cpf', 'nome'],
+      ['cpf', 'nome'],
+      ['cpf', 'nome'],
+      ['data1', 'data2'],
+    ];
+    expect(parser._getHeaderLine(sheetMock)).toBe(sheetMock.length-1);    
+  });
+
   it('should return the line containing the sheet header even when the cell value is dirty', () => {
     const sheetMock = [
       ['CPF (só números)', 'Nome with anything']
@@ -154,7 +167,6 @@ describe('parser _getContrachequeData', () => {
     expect(parser._getContrachequeData(spreadsheet)).toEqual(expectedContrachequeData);
   });
 });
-
 
 describe('parser _getSubsidio', () => {
   it('should collect the subsidio data from the spreadsheet', async () => {

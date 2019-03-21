@@ -16,14 +16,12 @@ const CONTRACHEQUE_KEYWORD = 'contracheque',
  */
 const _getHeaderLine = sheet => {
   const headerKeywords = ['cpf', 'nome'];
-  let firstDataLine;
-  const found = sheet.some((line, lineNumber) => {
-    firstDataLine = lineNumber + 1;
+  const foundHeaderLine = sheet.reduce((headerLine, line, lineNumber) => {
     const isHeader = line.length >= headerKeywords.length && headerKeywords.every((key, index) =>
       !!line[index] && containsSubstring(line[index], key));
-    return isHeader;
-  });
-  return found ? firstDataLine : undefined;
+    return isHeader ? lineNumber + 1 : headerLine;
+  }, -1);
+  return foundHeaderLine !== -1 ? foundHeaderLine : undefined;
 };
 
 /**
