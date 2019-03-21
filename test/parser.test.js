@@ -145,12 +145,28 @@ describe('parser _getContrachequeData', () => {
     const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
 
     const expectedContrachequeData = [
-      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 41, diarias: 81, direitos_eventuais: 792, direitos_pessoias: 63, imposto_de_renda: 31, indenizacoes: 459, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome1", previdencia_publica: 21, remuneracao_do_orgao_de_origem: 71, rendimento_liquido: 1264, retencao_por_teto_constitucional: 51, subsidio: 11, total_de__rendimentos: 1325, total_de_descontos: 61}, 
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 41, diarias: 81, direitos_eventuais: 792, direitos_pessoias: 63.5, imposto_de_renda: 31, indenizacoes: 459, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome1", previdencia_publica: 21, remuneracao_do_orgao_de_origem: 71, rendimento_liquido: 1264.5, retencao_por_teto_constitucional: 51, subsidio: 11, total_de__rendimentos: 1325.5, total_de_descontos: 61}, 
       { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 42, diarias: 82, direitos_eventuais: 804, direitos_pessoias: 66, imposto_de_renda: 32, indenizacoes: 468, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome2", previdencia_publica: 22, remuneracao_do_orgao_de_origem: 72, rendimento_liquido: 1288, retencao_por_teto_constitucional: 52, subsidio: 12, total_de__rendimentos: 1350, total_de_descontos: 62}, 
       { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 43, diarias: 83, direitos_eventuais: 816, direitos_pessoias: 69, imposto_de_renda: 33, indenizacoes: 477, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome3", previdencia_publica: 23, remuneracao_do_orgao_de_origem: 73, rendimento_liquido: 1312, retencao_por_teto_constitucional: 53, subsidio: 13, total_de__rendimentos: 1375, total_de_descontos: 63}, 
       { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 44, diarias: 84, direitos_eventuais: 828, direitos_pessoias: 72, imposto_de_renda: 34, indenizacoes: 486, lotacao: "CARTÓRIO ELEITORAL", nome: "nome4", previdencia_publica: 24, remuneracao_do_orgao_de_origem: 74, rendimento_liquido: 1336, retencao_por_teto_constitucional: 54, subsidio: 14, total_de__rendimentos: 1400, total_de_descontos: 64}
     ];
 
     expect(parser._getContrachequeData(spreadsheet)).toEqual(expectedContrachequeData);
+  });
+});
+
+
+describe('parser _getSubsidio', () => {
+  it('should collect the subsidio data from the spreadsheet', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(SIMPLE_DATA_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    const expectedContrachequeData = [
+      {abono_de_permanencia: 11.5, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhe1: "asdf1", subsidio_detalhe2: "qwer1", subsidio_outra1: 21, subsidio_outra2: 31, total_de_direitos_pessoais: 63.5}, 
+      {abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhe1: "asdf2", subsidio_detalhe2: "qwer2", subsidio_outra1: 22, subsidio_outra2: 32, total_de_direitos_pessoais: 66}, 
+      {abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhe1: "asdf3", subsidio_detalhe2: "qwer3", subsidio_outra1: 23, subsidio_outra2: 33, total_de_direitos_pessoais: 69}, 
+      {abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "nome4", subsidio_detalhe1: "asdf4", subsidio_detalhe2: "qwer4", subsidio_outra1: 24, subsidio_outra2: 34, total_de_direitos_pessoais: 72}
+    ];
+
+    expect(parser._getSubsidioData(spreadsheet)).toEqual(expectedContrachequeData);
   });
 });
