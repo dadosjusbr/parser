@@ -150,6 +150,34 @@ describe('paser _getSheetData', () => {
       {campo1: 'dados31', campo2: 'dados32'}
     ]);
   });
+
+  it('should remove lines that are not data', () => {
+    const sheetMock = [
+      ['asdf', 'asdf'], 
+      ['fsda', 'fasd'], 
+      ['cpf', 'nome'], //header
+      [0, 'dados12'], 
+      ['dados21', 'dados22'], 
+      ['dados31', 'dados32'], 
+      [0, 'dados42'], 
+      ['dados51', 'dados52'], 
+      [] 
+    ];
+    const sheetModel = [
+      {fieldName: 'campo1'},
+      {fieldName: 'campo2'},
+    ];
+
+    const data = parser._getSheetData(sheetModel, sheetMock);
+    
+    expect(data).toEqual([
+      {campo1: 0, campo2: 'dados12'},
+      {campo1: 'dados21', campo2: 'dados22'},
+      {campo1: 'dados31', campo2: 'dados32'},
+      {campo1: 0, campo2: 'dados42'},
+      {campo1: 'dados51', campo2: 'dados52'}
+    ]);
+  });
 });
 
 describe('parser _getContrachequeData', () => {

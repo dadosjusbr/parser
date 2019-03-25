@@ -50,7 +50,7 @@ const _getSheet = (keyword, spreadSheet) =>
  */
 const _getSheetData = (sheetModel, sheet) => {
   const headerLine = _getHeaderLine(sheet);
-  const isDataLine = line => line.length > 1 && !!line[0] && !!line[1]; 
+  const isDataLine = line => line.length > 1 && !!line[1];
   return sheet
     .filter((line, index) => index >= headerLine && line.length >= sheetModel.length && isDataLine(line))
     .map(line =>
