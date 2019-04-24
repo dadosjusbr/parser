@@ -196,15 +196,15 @@ describe('parser _getContrachequeData', () => {
   });
 });
 
-describe('parser _getSubsidio', () => {
+describe('parser _getSubsidioData', () => {
   it('should collect the subsidio data from the spreadsheet', async () => {
     const spreadsheetBuffer = await getSpreadsheet(SIMPLE_DATA_SPREADSHEET_PATH);
     const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
     const expectedContrachequeData = [
-      {abono_de_permanencia: 11.5, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhe1: "asdf1", subsidio_detalhe2: "qwer1", subsidio_outra1: 21, subsidio_outra2: 31, total_de_direitos_pessoais: 63.5}, 
-      {abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhe1: "asdf2", subsidio_detalhe2: "qwer2", subsidio_outra1: 22, subsidio_outra2: 32, total_de_direitos_pessoais: 66}, 
-      {abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhe1: "asdf3", subsidio_detalhe2: "qwer3", subsidio_outra1: 23, subsidio_outra2: 33, total_de_direitos_pessoais: 69}, 
-      {abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "nome4", subsidio_detalhe1: "asdf4", subsidio_detalhe2: "qwer4", subsidio_outra1: 24, subsidio_outra2: 34, total_de_direitos_pessoais: 72}
+      {abono_de_permanencia: 11.5, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "asdf1 | qwer1", subsidio_outras: 52, total_de_direitos_pessoais: 63.5}, 
+      {abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "asdf2 | qwer2", subsidio_outras: 54, total_de_direitos_pessoais: 66}, 
+      {abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "asdf3 | qwer3", subsidio_outras: 56, total_de_direitos_pessoais: 69}, 
+      {abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "nome4", subsidio_detalhes: "asdf4 | qwer4", subsidio_outras: 58, total_de_direitos_pessoais: 72}
     ];
 
     expect(parser._getSubsidioData(spreadsheet)).toEqual(expectedContrachequeData);
