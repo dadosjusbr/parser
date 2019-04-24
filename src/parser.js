@@ -41,6 +41,22 @@ const _getSheet = (keyword, spreadSheet) =>
   }, []);
 
 /**
+ * Clean the data based on its type.
+ * 
+ * @param {String | Number} data - data that will be clean. 
+ * @param {String} type - data type.
+ * 
+ * @returns {String | Number} clean data.
+ */
+const _cleanData = (data, type) => {
+  if (type === 'number') {
+    return data ? data : 0;
+  } else {
+    return data || data === 0 ? data : '';
+  }
+};
+
+/**
  * Collect, clean and format all the sheet data.
  * 
  * @param {[Object]} sheetModel a model of the sheet containing for each field its name and type.  
@@ -55,7 +71,7 @@ const _getSheetData = (sheetModel, sheet) => {
     .filter((line, index) => index >= headerLine && line.length >= sheetModel.length && isDataLine(line))
     .map(line =>
       sheetModel.reduce((sheetData, field, index) => {
-        sheetData[field.fieldName] = line[index]; //TODO: clean data according to its type
+        sheetData[field.fieldName] = _cleanData(line[index], field.type);
         return {...sheetData};
       }, {}));
 };
@@ -133,4 +149,4 @@ const parse = spreadsheet => {
 
 
 
-module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData };
+module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, _cleanData };
