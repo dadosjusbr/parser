@@ -352,3 +352,22 @@ describe('paser _joinDetalhesColumns', () => {
     expect(parser._joinDetalheColumns(sheetLineObj2)).toEqual('d | f');
   });
 });
+
+describe('parser _filterOutraAndDetalheColumns', () => {
+  it('should return an empty object if the passed object is empty', () => {
+    expect(parser._filterOutraAndDetalheColumns({})).toEqual({});
+  });
+
+  it('should return an object without any properties that contains "_outra" or "_detalhe"', () => {
+    const sheetLineObj1 = {
+      a: 'something1',
+      pre_outra1_pos: 'anything1',
+      pre_detalhe1_pos: 'anything2',
+      pre_outra2_pos: 'anything3',
+      pre_detalhe2_pos: 'anything4',
+      b: 'something2',
+    };
+
+    expect(parser._filterOutraAndDetalheColumns(sheetLineObj1)).toEqual({ a: 'something1', b: 'something2' });
+  });
+});
