@@ -210,3 +210,27 @@ describe('parser _getSubsidio', () => {
     expect(parser._getSubsidioData(spreadsheet)).toEqual(expectedContrachequeData);
   });
 });
+
+describe('parser _cleanData', () => {
+  it('should return the same number as passed', () => {
+    expect(parser._cleanData(2, 'number')).toBe(2);
+  });
+
+  it('should return zero if the data passed is falsy and the type is "number"', () => {
+    expect(parser._cleanData(undefined, 'number')).toBe(0);
+    expect(parser._cleanData(false, 'number')).toBe(0);
+    expect(parser._cleanData("", 'number')).toBe(0);
+    expect(parser._cleanData(null, 'number')).toBe(0);
+  });
+
+  it('should return the same string as passed', () => {
+    expect(parser._cleanData('olar', 'text')).toBe('olar');
+  });
+
+  it('should return empty string if the data passed is falsy and the type is "text"', () => {
+    expect(parser._cleanData(undefined, 'text')).toBe('');
+    expect(parser._cleanData(false, 'text')).toBe('');
+    expect(parser._cleanData("", 'text')).toBe('');
+    expect(parser._cleanData(null, 'text')).toBe('');
+  });
+});
