@@ -153,7 +153,7 @@ const _getSubsidioData = spreadSheet => {
  */
 const _getHeader = sheet => {
   const headerLine = _getHeaderLine(sheet);
-  const header = [...sheet[headerLine]];
+  const header = sheet.length && [...sheet[headerLine]];
   if (header && header.length > 1) {
     header[0] = 'cpf';
     header[1] = 'nome';
@@ -241,4 +241,4 @@ const parse = spreadsheet => {
 
 
 
-module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, _cleanData };
+module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, _cleanData, _getHeader };
