@@ -178,7 +178,9 @@ const _getHeader = sheet => {
 const _getOutraAndDetalheColumns = (sheet, sheetKey) => {
   //size of the header, less the fields CPF, Nome, Abono Permanencia and Total. The rest is outra values and outra details.
   const outraSize = Math.floor((_getHeader(sheet).length - 4) / 2);
-
+  
+  if (outraSize <= 0) return [];
+  
   return [...Array(outraSize).keys()].map(index => [
     { fieldName: `${sheetKey}_outra${index + 1}`, type: 'number' },
     { fieldName: `${sheetKey}_detalhe${index + 1}`, type: 'text' }
@@ -241,4 +243,5 @@ const parse = spreadsheet => {
 
 
 
-module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, _cleanData, _getHeader };
+module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, 
+  _getSubsidioData, _cleanData, _getHeader, _getOutraAndDetalheColumns };

@@ -262,3 +262,43 @@ describe('parser _getHeader', () => {
     expect(parser._getHeader(sheetMock)).toEqual(['cpf', 'nome', 'col1', 'col2']);
   });
 });
+
+describe('parser _getOutraAndDetalheColumns', () => {
+  it('return an empty array if the provided sheet is empty', () => {
+    expect(parser._getOutraAndDetalheColumns([], '')).toEqual([]);
+  });
+
+  it('should return an model sheet model containing 1 outra column and 1 detalhe column', () => {
+    const sheetMock = [
+      ['anything11', 'anything21'], 
+      ['anything12', 'anything22'], 
+      ['cpf', 'nome', '', ''],
+      ['', '', 'col1', 'col2', 'col3', 'col4'],
+      ['anything13', 'anything23'], 
+    ];
+    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
+    const expectedRes = [
+      { fieldName: `_outra1`, type: 'number' },
+      { fieldName: `_detalhe1`, type: 'text' }
+    ];
+    expect(outraAndDetalhe).toEqual(expectedRes);
+  });
+
+  it('should return an model sheet model containing 2 outra column and 1 detalhe column', () => {
+    const sheetMock = [
+      ['anything11', 'anything21'], 
+      ['anything12', 'anything22'], 
+      ['cpf', 'nome', '', ''],
+      ['', '', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6'],
+      ['anything13', 'anything23'], 
+    ];
+    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
+    const expectedRes = [
+      { fieldName: `_outra1`, type: 'number' },
+      { fieldName: `_detalhe1`, type: 'text' },
+      { fieldName: `_outra2`, type: 'number' },
+      { fieldName: `_detalhe2`, type: 'text' }
+    ];
+    expect(outraAndDetalhe).toEqual(expectedRes);
+  });
+});
