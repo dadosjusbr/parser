@@ -243,5 +243,7 @@ const parse = spreadsheet => {
 
 
 
-module.exports = { parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, 
-  _getSubsidioData, _cleanData, _getHeader, _getOutraAndDetalheColumns };
+module.exports = { 
+  parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, 
+  _cleanData, _getHeader, _getOutraAndDetalheColumns, _joinOutraColumns, _joinDetalheColumns 
+};

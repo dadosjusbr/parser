@@ -284,7 +284,7 @@ describe('parser _getOutraAndDetalheColumns', () => {
     expect(outraAndDetalhe).toEqual(expectedRes);
   });
 
-  it('should return an model sheet model containing 2 outra column and 1 detalhe column', () => {
+  it('should return an model sheet model containing 2 outra column and 2 detalhe column', () => {
     const sheetMock = [
       ['anything11', 'anything21'], 
       ['anything12', 'anything22'], 
@@ -300,5 +300,55 @@ describe('parser _getOutraAndDetalheColumns', () => {
       { fieldName: `_detalhe2`, type: 'text' }
     ];
     expect(outraAndDetalhe).toEqual(expectedRes);
+  });
+});
+
+describe('parser _joinOutraColumns', () => {
+  it('should return 0 if an empty object is passed', () => {
+    expect(parser._joinOutraColumns({})).toEqual(0);
+  });
+
+  it('should sum the value in each key that contains "_outra" in the passed object', () => {
+    const sheetLineObj1 = {
+      a: 1,
+      b: 2,
+      anything_outra: 3,
+      c: 4
+    };
+    expect(parser._joinOutraColumns(sheetLineObj1)).toEqual(3);
+
+    const sheetLineObj2 = {
+      a: 1,
+      b: 2,
+      anything_outra1: 3,
+      c: 4,
+      anything_outra2: 5
+    };
+    expect(parser._joinOutraColumns(sheetLineObj2)).toEqual(8);
+  });
+});
+
+describe('paser _joinDetalhesColumns', () => {
+  it('should return empty string if an empty object is passed', () => {
+    expect(parser._joinDetalheColumns({})).toEqual('');
+  });
+  
+  it('should concatenate the value in each key that contains "_detalhe" in the passed object using " | " as separator', () => {
+    const sheetLineObj1 = {
+      a: "a",
+      b: "b",
+      anything_detalhe: "c",
+      c: "d"
+    };
+    expect(parser._joinDetalheColumns(sheetLineObj1)).toEqual('c');
+
+    const sheetLineObj2 = {
+      a: 'a',
+      b: 'b',
+      anything_detalhe1: 'd',
+      c: 'e',
+      anything_detalhe2: 'f'
+    };
+    expect(parser._joinDetalheColumns(sheetLineObj2)).toEqual('d | f');
   });
 });
