@@ -1,5 +1,19 @@
 const parser = require('../src/parser');
-const { getSpreadsheet, SIMPLE_DATA_SPREADSHEET_PATH } = require('./spreadsheets');
+const { getSpreadsheet,
+  SIMPLE_DATA_SPREADSHEET_PATH,
+  SUBSIDIO_HEADERS_1,
+  SUBSIDIO_HEADERS_2,
+  SUBSIDIO_HEADERS_3,
+  SUBSIDIO_HEADERS_4,
+  SUBSIDIO_HEADERS_5,
+  SUBSIDIO_HEADERS_6,
+  SUBSIDIO_HEADERS_7,
+  SUBSIDIO_HEADERS_8,
+  SUBSIDIO_HEADERS_9,
+  SUBSIDIO_HEADERS_10,
+  SUBSIDIO_HEADERS_11,
+  SUBSIDIO_HEADERS_12,
+} = require('./spreadsheets');
 const { convertSpreadsheetToJson } = require('../src/xlsx_service');
 
 describe('paser parse', () => {
@@ -197,17 +211,101 @@ describe('parser _getContrachequeData', () => {
 });
 
 describe('parser _getSubsidioData', () => {
-  it('should collect the subsidio data from the spreadsheet', async () => {
-    const spreadsheetBuffer = await getSpreadsheet(SIMPLE_DATA_SPREADSHEET_PATH);
+  const testSubsidioData = async (spreadsheetPath, expectedData) => {
+    const spreadsheetBuffer = await getSpreadsheet(spreadsheetPath);
     const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
-    const expectedContrachequeData = [
+    expect(parser._getSubsidioData(spreadsheet)).toEqual(expectedData);
+  };
+
+  it('should collect the subsidio data from the spreadsheet', () => {
+    const simpleSubsidioData = [
       { abono_de_permanencia: 11.5, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "asdf1 | qwer1", subsidio_outras: 52, total_de_direitos_pessoais: 63.5 },
       { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "asdf2 | qwer2", subsidio_outras: 54, total_de_direitos_pessoais: 66 },
       { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "asdf3 | qwer3", subsidio_outras: 56, total_de_direitos_pessoais: 69 },
       { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "nome4", subsidio_detalhes: "asdf4 | qwer4", subsidio_outras: 58, total_de_direitos_pessoais: 72 }
     ];
+    testSubsidioData(SIMPLE_DATA_SPREADSHEET_PATH, simpleSubsidioData);
+  });
 
-    expect(parser._getSubsidioData(spreadsheet)).toEqual(expectedContrachequeData);
+  describe('parser _getSubsidioData with diferent headers', () => {
+    const regularSubsidioData = [
+      { abono_de_permanencia: 11, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 11 },
+      { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "a | b", subsidio_outras: 0, total_de_direitos_pessoais: 12 },
+      { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "abc | def", subsidio_outras: 3, total_de_direitos_pessoais: 16 },
+      { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "Nome4", subsidio_detalhes: "some sentence | other sentence with more words", subsidio_outras: 19.3, total_de_direitos_pessoais: 33.3 }
+    ];
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_1, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe, Outra (R$), Detalhe, Total Vantagens Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_2, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra 1 DIR.PES. (R$), Detalhe,Outra 2 DIR.PES. (R$), Detalhe,Total de Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_3, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Vantagens Art. 184, I, e 192, I, Lei 1.711/52 (R$), Detalhe,Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_4, regularSubsidioData);      
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf ,nome ,Abono de permanência (R$) ,Outra (R$) ,Detalhe ,Outra (R$) ,Detalhe ,Total de Direitos Pessoais, OBSERVAÇÃO:...]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_5, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe,Outra (R$), Detalhe,Outra (R$), Detalhe, Outra (R$), Detalhe,Total de Direitos Pessoais]`, async () => {
+      const expectedSubsidioData = [
+        { abono_de_permanencia: 11, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 11 },
+        { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "a | b | c | d", subsidio_outras: 0, total_de_direitos_pessoais: 12 },
+        { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "ab | cd | ef | gh", subsidio_outras: 10, total_de_direitos_pessoais: 23 },
+        { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "Nome4", subsidio_detalhes: "detalhe one | detalhe two | detalhe three | detalhe four", subsidio_outras: 11, total_de_direitos_pessoais: 25 }
+      ];
+      testSubsidioData(SUBSIDIO_HEADERS_6, expectedSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe,Outra (R$), Detalhe, Total Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_7, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência, Outra - Detalhe, Outra - (R$), Total de Direitos Pessoais]`, async () => {
+      const expectedSubsidioData = [
+        { abono_de_permanencia: 11, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 11 },
+        { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 12 },
+        { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "2", subsidio_outras: 1, total_de_direitos_pessoais: 16 },
+        { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "Nome4", subsidio_detalhes: "2.4", subsidio_outras: 3.5, total_de_direitos_pessoais: 19.9 }
+      ];
+      testSubsidioData(SUBSIDIO_HEADERS_8, expectedSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Vant. Art. 192, Inda Lei 8.112/90, Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_9, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe, Outra (R$), Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      const expectedSubsidioData = [
+        { abono_de_permanencia: 11, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 11 },
+        { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "a | b | c", subsidio_outras: 0, total_de_direitos_pessoais: 12 },
+        { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "ab | cd | ef", subsidio_outras: 6, total_de_direitos_pessoais: 19 },
+        { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "Nome4", subsidio_detalhes: "detalhe one | detalhe two | detalhe three", subsidio_outras: 35.3, total_de_direitos_pessoais: 49.3 }
+      ];
+      testSubsidioData(SUBSIDIO_HEADERS_10, expectedSubsidioData);
+    });
+    
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Abono de Permanência-GNAT (R$), Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      testSubsidioData(SUBSIDIO_HEADERS_11, regularSubsidioData);
+    });
+
+    it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Outra (R$), Detalhe, Outra (R$), Detalhe, Outra (R$), Detalhe, Outra (R$), Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
+      const expectedSubsidioData = [
+        { abono_de_permanencia: 11, cpf: "xxx.xxx.xxx-xx", nome: "Nome1", subsidio_detalhes: "", subsidio_outras: 0, total_de_direitos_pessoais: 11 },
+        { abono_de_permanencia: 12, cpf: "xxx.xxx.xxx-xx", nome: "Nome2", subsidio_detalhes: "a | b | c | d | e", subsidio_outras: 0, total_de_direitos_pessoais: 12 },
+        { abono_de_permanencia: 13, cpf: "xxx.xxx.xxx-xx", nome: "Nome3", subsidio_detalhes: "ab | cd | ef | gh | ij", subsidio_outras: 15, total_de_direitos_pessoais: 28 },
+        { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "Nome4", subsidio_detalhes: "detalhe one | detalhe two | detalhe three | detalhe four | detalhe five", subsidio_outras: 6.5, total_de_direitos_pessoais: 20.5 }
+      ];
+      testSubsidioData(SUBSIDIO_HEADERS_12, expectedSubsidioData);
+    });
   });
 });
 
@@ -242,22 +340,22 @@ describe('parser _getHeader', () => {
 
   it('should return the header line', () => {
     const sheetMock = [
-      ['anything11', 'anything21'], 
-      ['anything12', 'anything22'], 
+      ['anything11', 'anything21'],
+      ['anything12', 'anything22'],
       ['cpf', 'nome', '', ''],
       ['', '', 'col1', 'col2'],
-      ['anything13', 'anything23'], 
+      ['anything13', 'anything23'],
     ];
     expect(parser._getHeader(sheetMock)).toEqual(['cpf', 'nome', 'col1', 'col2']);
   });
 
   it('should remove the columns in the header line tha are not part of the header', () => {
     const sheetMock = [
-      ['anything11', 'anything21'], 
-      ['anything12', 'anything22'], 
+      ['anything11', 'anything21'],
+      ['anything12', 'anything22'],
       ['cpf', 'nome', '', ''],
       ['', '', 'col1', 'col2', '', 'col3', 'col4'],
-      ['anything13', 'anything23'], 
+      ['anything13', 'anything23'],
     ];
     expect(parser._getHeader(sheetMock)).toEqual(['cpf', 'nome', 'col1', 'col2']);
   });
@@ -270,11 +368,11 @@ describe('parser _getOutraAndDetalheColumns', () => {
 
   it('should return an model sheet model containing 1 outra column and 1 detalhe column', () => {
     const sheetMock = [
-      ['anything11', 'anything21'], 
-      ['anything12', 'anything22'], 
+      ['anything11', 'anything21'],
+      ['anything12', 'anything22'],
       ['cpf', 'nome', '', ''],
       ['', '', 'col1', 'col2', 'col3', 'col4'],
-      ['anything13', 'anything23'], 
+      ['anything13', 'anything23'],
     ];
     const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
     const expectedRes = [
@@ -286,11 +384,11 @@ describe('parser _getOutraAndDetalheColumns', () => {
 
   it('should return an model sheet model containing 2 outra column and 2 detalhe column', () => {
     const sheetMock = [
-      ['anything11', 'anything21'], 
-      ['anything12', 'anything22'], 
+      ['anything11', 'anything21'],
+      ['anything12', 'anything22'],
       ['cpf', 'nome', '', ''],
       ['', '', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6'],
-      ['anything13', 'anything23'], 
+      ['anything13', 'anything23'],
     ];
     const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
     const expectedRes = [
@@ -332,7 +430,7 @@ describe('paser _joinDetalhesColumns', () => {
   it('should return empty string if an empty object is passed', () => {
     expect(parser._joinDetalheColumns({})).toEqual('');
   });
-  
+
   it('should concatenate the value in each key that contains "_detalhe" in the passed object using " | " as separator', () => {
     const sheetLineObj1 = {
       a: "a",
