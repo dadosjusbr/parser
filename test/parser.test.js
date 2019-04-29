@@ -1,18 +1,15 @@
 const parser = require('../src/parser');
-const { getSpreadsheet,
-  SIMPLE_DATA_SPREADSHEET_PATH,
-  SUBSIDIO_HEADERS_1,
-  SUBSIDIO_HEADERS_2,
-  SUBSIDIO_HEADERS_3,
-  SUBSIDIO_HEADERS_4,
-  SUBSIDIO_HEADERS_5,
-  SUBSIDIO_HEADERS_6,
-  SUBSIDIO_HEADERS_7,
-  SUBSIDIO_HEADERS_8,
-  SUBSIDIO_HEADERS_9,
-  SUBSIDIO_HEADERS_10,
-  SUBSIDIO_HEADERS_11,
-  SUBSIDIO_HEADERS_12,
+const {
+  getSpreadsheet, SIMPLE_DATA_SPREADSHEET_PATH,
+
+  SUBSIDIO_HEADERS_1, SUBSIDIO_HEADERS_2, SUBSIDIO_HEADERS_3, SUBSIDIO_HEADERS_4,
+  SUBSIDIO_HEADERS_5, SUBSIDIO_HEADERS_6, SUBSIDIO_HEADERS_7, SUBSIDIO_HEADERS_8,
+  SUBSIDIO_HEADERS_9, SUBSIDIO_HEADERS_10, SUBSIDIO_HEADERS_11, SUBSIDIO_HEADERS_12,
+
+  INDENIZACOES_HEADERS_1, INDENIZACOES_HEADERS_2, INDENIZACOES_HEADERS_3, INDENIZACOES_HEADERS_4,
+  INDENIZACOES_HEADERS_5, INDENIZACOES_HEADERS_6, INDENIZACOES_HEADERS_7, INDENIZACOES_HEADERS_8,
+  INDENIZACOES_HEADERS_9, INDENIZACOES_HEADERS_10, INDENIZACOES_HEADERS_11, INDENIZACOES_HEADERS_12,
+  INDENIZACOES_HEADERS_13, INDENIZACOES_HEADERS_14, INDENIZACOES_HEADERS_15, INDENIZACOES_HEADERS_16
 } = require('./spreadsheets');
 const { convertSpreadsheetToJson } = require('../src/xlsx_service');
 
@@ -248,7 +245,7 @@ describe('parser _getSubsidioData', () => {
     });
 
     it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Vantagens Art. 184, I, e 192, I, Lei 1.711/52 (R$), Detalhe,Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
-      testSubsidioData(SUBSIDIO_HEADERS_4, regularSubsidioData);      
+      testSubsidioData(SUBSIDIO_HEADERS_4, regularSubsidioData);
     });
 
     it(`should parse subsidio sheet with the given header: [cpf ,nome ,Abono de permanência (R$) ,Outra (R$) ,Detalhe ,Outra (R$) ,Detalhe ,Total de Direitos Pessoais, OBSERVAÇÃO:...]`, async () => {
@@ -292,7 +289,7 @@ describe('parser _getSubsidioData', () => {
       ];
       testSubsidioData(SUBSIDIO_HEADERS_10, expectedSubsidioData);
     });
-    
+
     it(`should parse subsidio sheet with the given header: [cpf, nome, Abono de permanência (R$), Abono de Permanência-GNAT (R$), Detalhe, Outra (R$), Detalhe, Total de Direitos Pessoais]`, async () => {
       testSubsidioData(SUBSIDIO_HEADERS_11, regularSubsidioData);
     });
@@ -374,7 +371,7 @@ describe('parser _getOutraAndDetalheColumns', () => {
       ['', '', 'col1', 'col2', 'col3', 'col4'],
       ['anything13', 'anything23'],
     ];
-    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
+    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '', 4);
     const expectedRes = [
       { fieldName: `_outra1`, type: 'number' },
       { fieldName: `_detalhe1`, type: 'text' }
@@ -390,7 +387,7 @@ describe('parser _getOutraAndDetalheColumns', () => {
       ['', '', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6'],
       ['anything13', 'anything23'],
     ];
-    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '');
+    const outraAndDetalhe = parser._getOutraAndDetalheColumns(sheetMock, '', 4);
     const expectedRes = [
       { fieldName: `_outra1`, type: 'number' },
       { fieldName: `_detalhe1`, type: 'text' },
@@ -468,4 +465,128 @@ describe('parser _filterOutraAndDetalheColumns', () => {
 
     expect(parser._filterOutraAndDetalheColumns(sheetLineObj1)).toEqual({ a: 'something1', b: 'something2' });
   });
+});
+
+describe('parser _getIndenizacoesData', () => {
+  const testIndenizacoesData = async (spreadsheetPath, expectedData) => {
+    const spreadsheetBuffer = await getSpreadsheet(spreadsheetPath);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    expect(parser._getIndenizacoesData(spreadsheet)).toEqual(expectedData);
+  };
+
+  const regularIndenizacoesData = [
+    { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+    { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: 'a | b | c', total_indenizacoes: 222 },
+    { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 6, indenizacoes_detalhes: 'ab | cd | ef', total_indenizacoes: 234 },
+    { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 3.6, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three', total_indenizacoes: 237.6 }
+  ];
+
+  it(`should get the data from the sheets with the header: 
+      ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)", "Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_1, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+    ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"],`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: 'a | b | c | d', total_indenizacoes: 222 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 10, indenizacoes_detalhes: 'ab | cd | ef | gh', total_indenizacoes: 238 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 5.3, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three | detalhe four', total_indenizacoes: 239.3 }
+      ];
+      await testIndenizacoesData(INDENIZACOES_HEADERS_2, expectedData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio Alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_3, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe  (ABONO PECUNIÁRIO)","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_4, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra 1 (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"],`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_5, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: 'a | b | c | d | e | f | g | h | i', total_indenizacoes: 222 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 45, indenizacoes_detalhes: 'ab | cd | ef | gh | ij | kl | mn | op | qr', total_indenizacoes: 273 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 10.3, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three | detalhe four | detalhe five | detalhe six | detalhe seven | detalhe eight | detalhe nine', total_indenizacoes: 244.3 }
+      ];
+      await testIndenizacoesData(INDENIZACOES_HEADERS_6, expectedData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"],`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: 'a | b | c | d | e | f | g', total_indenizacoes: 222 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 28, indenizacoes_detalhes: 'ab | cd | ef | gh | ij | kl | mn', total_indenizacoes: 256 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 8.3, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three | detalhe four | detalhe five | detalhe six | detalhe seven', total_indenizacoes: 242.3 }
+      ];
+      await testIndenizacoesData(INDENIZACOES_HEADERS_7, expectedData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"],`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: 'a | b | c | d | e | f', total_indenizacoes: 222 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 21, indenizacoes_detalhes: 'ab | cd | ef | gh | ij | kl', total_indenizacoes: 249 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 7.3, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three | detalhe four | detalhe five | detalhe six', total_indenizacoes: 241.3 }
+      ];
+      await testIndenizacoesData(INDENIZACOES_HEADERS_8, expectedData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação","Auxílio Pré-escolar","Auxílio Saúde","Auxílio Natalidade","Auxílio Moradia","Ajuda de Custo","Total Indenizações"],`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 216 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 222 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 228 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 0, indenizacoes_detalhes: '', total_indenizacoes: 234 }
+      ];
+      await testIndenizacoesData(INDENIZACOES_HEADERS_9, expectedData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$) 1911","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_10, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Bolsa Pós-Graduação (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_11, regularIndenizacoesData);
+    });
+
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílioalimentação (R$)", "Auxílio Préescolar (R$)", "Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_12, regularIndenizacoesData);
+    });
+
+  it(`should get the data from the sheets with the header: 
+  ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)","Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Bolsa Pós-Graduação (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"],`,
+    async () => {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_13, regularIndenizacoesData);
+    });
 });

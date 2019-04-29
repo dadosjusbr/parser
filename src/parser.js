@@ -5,7 +5,7 @@ const { containsSubstring } = require('./string_utils');
  */
 const CONTRACHEQUE_KEYWORD = 'contracheque',
   SUBSIDIO_KEYWORD = 'pessoais',
-  INDENIZACOES_KEYWORD = 'indenizacoes',
+  INDENIZACOES_KEYWORD = 'INDENIZAÇÕES',
   DIREITOS_EVENTUAIS_KEYWORD = 'eventuais',
   DADOS_CADASTRAIS_KEYWORD = 'dados cadastrais';
 
@@ -110,7 +110,7 @@ const _getContrachequeData = spreadSheet => {
 };
 
 /**
- * Get the contracheque data from the spreadsheet.
+ * Get the subsidio data from the spreadsheet.
  * 
  * @param {Object} spreadSheet the whole spreadsheet object.
  * 
@@ -118,9 +118,10 @@ const _getContrachequeData = spreadSheet => {
  */
 const _getSubsidioData = spreadSheet => {
   const sheetKey = 'subsidio';
+  const fixedColsSize = 4;
   const sheet = _getSheet(SUBSIDIO_KEYWORD, spreadSheet);
 
-  const outraCols = _getOutraAndDetalheColumns(sheet, sheetKey);
+  const outraCols = _getOutraAndDetalheColumns(sheet, sheetKey, fixedColsSize);
 
   const subsidioModel = [
     { fieldName: 'cpf', type: 'text' },
@@ -142,6 +143,48 @@ const _getSubsidioData = spreadSheet => {
       ...filteredLineObj,
       subsidio_outras,
       subsidio_detalhes
+    };
+  });
+};
+
+
+/**
+ * Get the indenizacoes data from the spreadsheet.
+ * 
+ * @param {Object} spreadSheet the whole spreadsheet object.
+ * 
+ * @returns {[Object]} the spreadsheet data.
+ */
+const _getIndenizacoesData = spreadSheet => {
+  const sheetkey = 'indenizacoes';
+  const fixedColsSize = 9;
+  const sheet = _getSheet(INDENIZACOES_KEYWORD, spreadSheet);
+
+  const outraCols = _getOutraAndDetalheColumns(sheet, sheetkey, fixedColsSize);
+
+  const indenizacoesModel = [
+    { fieldName: 'cpf', type: 'text' },
+    { fieldName: 'nome', type: 'text' },
+    { fieldName: 'auxilio_alimentacao', type: 'number' },
+    { fieldName: 'auxilio_pre_escolar', type: 'number' },
+    { fieldName: 'auxilio_saude', type: 'number' },
+    { fieldName: 'auxilio_natalidade', type: 'number' },
+    { fieldName: 'auxilio_moradia', type: 'number' },
+    { fieldName: 'ajuda_de_custo', type: 'number' },
+    ...outraCols,
+    { fieldName: 'total_indenizacoes', type: 'number' },
+  ];
+
+  const sheetData = _getSheetData(indenizacoesModel, sheet);
+
+  return sheetData.map(sheetLineObj => {
+    const indenizacoes_outras = _joinOutraColumns(sheetLineObj);
+    const indenizacoes_detalhes = _joinDetalheColumns(sheetLineObj);
+    const filteredLineObj = _filterOutraAndDetalheColumns(sheetLineObj);
+    return {
+      ...filteredLineObj,
+      indenizacoes_outras,
+      indenizacoes_detalhes
     };
   });
 };
@@ -175,12 +218,11 @@ const _getHeader = sheet => {
  * 
  * @returns {[Object]} a sheet model of its outra and detalhe columns.
  */
-const _getOutraAndDetalheColumns = (sheet, sheetKey) => {
-  //size of the header, less the fields CPF, Nome, Abono Permanencia and Total. The rest is outra values and outra details.
-  const outraSize = Math.floor((_getHeader(sheet).length - 4) / 2);
-  
+const _getOutraAndDetalheColumns = (sheet, sheetKey, fixedColsSize = 0) => {
+  const outraSize = Math.floor((_getHeader(sheet).length - fixedColsSize) / 2);
+
   if (outraSize <= 0) return [];
-  
+
   return [...Array(outraSize).keys()].map(index => [
     { fieldName: `${sheetKey}_outra${index + 1}`, type: 'number' },
     { fieldName: `${sheetKey}_detalhe${index + 1}`, type: 'text' }
@@ -241,10 +283,8 @@ const parse = spreadsheet => {
   throw new Error('not implemented yet');
 };
 
-
-
-module.exports = { 
-  parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData, 
+module.exports = {
+  parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData,
   _cleanData, _getHeader, _getOutraAndDetalheColumns, _joinOutraColumns, _joinDetalheColumns,
-  _filterOutraAndDetalheColumns
+  _filterOutraAndDetalheColumns, _getIndenizacoesData
 };
