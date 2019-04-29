@@ -37,7 +37,5 @@ module.exports = {
     INDENIZACOES_HEADERS_12: '/assets/indenizacoes_headers/header12.xlsx',  
     INDENIZACOES_HEADERS_13: '/assets/indenizacoes_headers/header13.xlsx',  
     INDENIZACOES_HEADERS_14: '/assets/indenizacoes_headers/header14.xlsx',  
-    INDENIZACOES_HEADERS_15: '/assets/indenizacoes_headers/header15.xlsx',  
-    INDENIZACOES_HEADERS_16: '/assets/indenizacoes_headers/header16.xlsx',  
     getSpreadsheet: path => readFileAsync(__dirname + path) 
 };

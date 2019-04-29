@@ -48,7 +48,7 @@ describe('xlsx_service convertpreadsheetToJson should', () => {
     } catch (e) {
       expect(e instanceof APIError).toBe(true);
       expect(e.status).toBe(httpStatus.BAD_REQUEST);
-      expect(e.message).toBe('File is password-protected');
+      expect(e.message).toBe('The following error was found when converting the spreadsheet to JSON: [Error: File is password-protected]');
     }
   });
 });
