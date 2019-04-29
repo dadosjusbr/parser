@@ -1,6 +1,7 @@
 const http = require('http');
 const xlsxService = require('./xlsx_service');
 const APIError = require('./api_error');
+const errorMessages = require('./error_messages');
 const httpStatus = require('http-status');
 
 /**
@@ -23,7 +24,8 @@ const _fetchSpreadshet = url =>
       });
     })
     .on('error', err => {
-      reject(new APIError(err.message, httpStatus.BAD_REQUEST, err.stack));
+      const {message, code} = errorMessages.FETCH_SPREADSHEET_ERROR(err, url);
+      reject(new APIError(message, httpStatus.BAD_REQUEST, code, err.stack));
     });
   });
 

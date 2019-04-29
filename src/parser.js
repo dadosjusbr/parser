@@ -150,7 +150,6 @@ const _getSubsidioData = spreadSheet => {
   });
 };
 
-
 /**
  * Get the indenizacoes data from the spreadsheet.
  * 
@@ -165,7 +164,7 @@ const _getIndenizacoesData = spreadSheet => {
   const headerSize = _getHeader(sheet).length;
   if (headerSize < fixedColsSize) {
     const { message, code } = errorMessages.HEADER_SIZE_ERROR(fixedColsSize, headerSize, sheetkey);
-    throw new APIError(message, httpStatus.BAD_REQUEST, undefined, code);
+    throw new APIError(message, httpStatus.BAD_REQUEST, code);
   }
 
   const outraCols = _getOutraAndDetalheColumns(sheet, sheetkey, fixedColsSize);

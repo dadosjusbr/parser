@@ -1,7 +1,7 @@
 const xlsx = require('xlsx');
 const APIError = require('./api_error');
 const httpStatus = require('http-status');
-
+const errorMessages = require('./error_messages');
 const convertSpreadsheetToJson = spreadsheetBuffer => {
   try {
     const workbook = xlsx.read(spreadsheetBuffer, { type: 'buffer' });
@@ -11,7 +11,8 @@ const convertSpreadsheetToJson = spreadsheetBuffer => {
     });
     return spreadsheetObj;
   } catch (e) {
-    throw new APIError(e.message, httpStatus.BAD_REQUEST, e.stack);   
+    const {message, code} = errorMessages.XLSX_TO_JSON_ERROR(e);
+    throw new APIError(message, httpStatus.BAD_REQUEST, code, e.stack);   
   }
 };
 
