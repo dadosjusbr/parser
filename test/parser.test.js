@@ -9,9 +9,11 @@ const {
   INDENIZACOES_HEADERS_1, INDENIZACOES_HEADERS_2, INDENIZACOES_HEADERS_3, INDENIZACOES_HEADERS_4,
   INDENIZACOES_HEADERS_5, INDENIZACOES_HEADERS_6, INDENIZACOES_HEADERS_7, INDENIZACOES_HEADERS_8,
   INDENIZACOES_HEADERS_9, INDENIZACOES_HEADERS_10, INDENIZACOES_HEADERS_11, INDENIZACOES_HEADERS_12,
-  INDENIZACOES_HEADERS_13, INDENIZACOES_HEADERS_14, INDENIZACOES_HEADERS_15, INDENIZACOES_HEADERS_16
+  INDENIZACOES_HEADERS_13, INDENIZACOES_HEADERS_14
 } = require('./spreadsheets');
 const { convertSpreadsheetToJson } = require('../src/xlsx_service');
+const errorMessages = require('../src/error_messages');
+const httpStatus = require('http-status');
 
 describe('paser parse', () => {
   it('shoul throw not implemented error', () => {
@@ -589,4 +591,16 @@ describe('parser _getIndenizacoesData', () => {
     async () => {
       await testIndenizacoesData(INDENIZACOES_HEADERS_13, regularIndenizacoesData);
     });
+
+  it('should throw an APIError when the header is: [cpf,nome]', async () => {
+    try {
+      await testIndenizacoesData(INDENIZACOES_HEADERS_14, {});
+      fail('an error should have been thrown');
+    } catch (e) {
+      const {message, code} = errorMessages.HEADER_SIZE_ERROR(9, 2, 'indenizacoes');
+      expect(e.message).toEqual(message);
+      expect(e.errorCode).toEqual(code);
+      expect(e.status).toEqual(httpStatus.BAD_REQUEST);
+    }
+  });
 });

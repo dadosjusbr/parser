@@ -1,4 +1,7 @@
 const { containsSubstring } = require('./string_utils');
+const errorMessages = require('./error_messages');
+const APIError = require('./api_error');
+const httpStatus = require('http-status');
 
 /**
  * Keywords contained on each name or title.  
@@ -159,6 +162,11 @@ const _getIndenizacoesData = spreadSheet => {
   const sheetkey = 'indenizacoes';
   const fixedColsSize = 9;
   const sheet = _getSheet(INDENIZACOES_KEYWORD, spreadSheet);
+  const headerSize = _getHeader(sheet).length;
+  if (headerSize < fixedColsSize) {
+    const { message, code } = errorMessages.HEADER_SIZE_ERROR(fixedColsSize, headerSize, sheetkey);
+    throw new APIError(message, httpStatus.BAD_REQUEST, undefined, code);
+  }
 
   const outraCols = _getOutraAndDetalheColumns(sheet, sheetkey, fixedColsSize);
 
