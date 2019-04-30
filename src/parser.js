@@ -242,6 +242,26 @@ const _getDireitosEventuaisData = spreadSheet => {
 };
 
 /**
+ * Get the dadosCadastrais data from the spreadsheet.
+ * 
+ * @param {Object} spreadSheet the whole spreadsheet object.
+ * 
+ * @returns {[Object]} the spreadsheet data.
+ */
+const _getDadosCadastraisData = spreadSheet => {
+  const dadosCadastraisModel = [
+      { fieldName: 'cpf', type: 'text' },
+      { fieldName: 'nome', type: 'text', key: true },
+      { fieldName: 'matricula', type: 'text' },
+      { fieldName: 'lotacao_de_origem', type: 'text' },
+      { fieldName: 'orgao_de_origem', type: 'text' },
+      { fieldName: 'cargo_de_origem', type: 'text' },   
+  ];
+
+  return _getSheetData(dadosCadastraisModel, _getSheet(DADOS_CADASTRAIS_KEYWORD, spreadSheet));
+};
+
+/**
  * Returns an array with the header values.
  * 
  * @param {Array} sheet the sheet that contains the header. 
@@ -338,5 +358,5 @@ const parse = spreadsheet => {
 module.exports = {
   parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData,
   _cleanData, _getHeader, _getOutraAndDetalheColumns, _joinOutraColumns, _joinDetalheColumns,
-  _filterOutraAndDetalheColumns, _getIndenizacoesData, _getDireitosEventuaisData
+  _filterOutraAndDetalheColumns, _getIndenizacoesData, _getDireitosEventuaisData, _getDadosCadastraisData
 };

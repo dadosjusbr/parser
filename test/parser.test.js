@@ -626,3 +626,22 @@ describe('parser _getDireitosEventuaisData', () => {
       await testDireitosEventuaisData(DIREITOS_EVENTUAIS_HEADER_1, expectedData);
     });
 });
+
+describe('parser _getDadosCadastraisData', () => {
+  const testDadosCadastraisData = async (spreadsheetPath, expectedData) => {
+    const spreadsheetBuffer = await getSpreadsheet(spreadsheetPath);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    expect(parser._getDadosCadastraisData(spreadsheet)).toEqual(expectedData);
+  };
+
+  it(`should get the data from the dados cadastrais sheet`, async () => {
+      const expectedData = [
+        { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome1', matricula: 1, lotacao_de_origem: 'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+        { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome2', matricula: 2, lotacao_de_origem: 'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+        { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome3', matricula: 3, lotacao_de_origem: 'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+        { cpf: 'xxx.xxx.xxx-xx', nome: 'nome4', matricula: 4, lotacao_de_origem: 'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+      ];
+      await testDadosCadastraisData(SIMPLE_DATA_SPREADSHEET_PATH, expectedData);
+    });
+});
+
