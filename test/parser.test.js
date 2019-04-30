@@ -9,7 +9,9 @@ const {
   INDENIZACOES_HEADERS_1, INDENIZACOES_HEADERS_2, INDENIZACOES_HEADERS_3, INDENIZACOES_HEADERS_4,
   INDENIZACOES_HEADERS_5, INDENIZACOES_HEADERS_6, INDENIZACOES_HEADERS_7, INDENIZACOES_HEADERS_8,
   INDENIZACOES_HEADERS_9, INDENIZACOES_HEADERS_10, INDENIZACOES_HEADERS_11, INDENIZACOES_HEADERS_12,
-  INDENIZACOES_HEADERS_13, INDENIZACOES_HEADERS_14
+  INDENIZACOES_HEADERS_13, INDENIZACOES_HEADERS_14,
+
+  DIREITOS_EVENTUAIS_HEADER_1,
 } = require('./spreadsheets');
 const { convertSpreadsheetToJson } = require('../src/xlsx_service');
 const errorMessages = require('../src/error_messages');
@@ -597,10 +599,30 @@ describe('parser _getIndenizacoesData', () => {
       await testIndenizacoesData(INDENIZACOES_HEADERS_14, {});
       fail('an error should have been thrown');
     } catch (e) {
-      const {message, code} = errorMessages.HEADER_SIZE_ERROR(9, 2, 'indenizacoes');
+      const { message, code } = errorMessages.HEADER_SIZE_ERROR(9, 2, 'indenizacoes');
       expect(e.message).toEqual(message);
       expect(e.errorCode).toEqual(code);
       expect(e.status).toEqual(httpStatus.BAD_REQUEST);
     }
   });
+});
+
+describe('parser _getDireitosEventuaisData', () => {
+  const testDireitosEventuaisData = async (spreadsheetPath, expectedData) => {
+    const spreadsheetBuffer = await getSpreadsheet(spreadsheetPath);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    expect(parser._getDireitosEventuaisData(spreadsheet)).toEqual(expectedData);
+  };
+
+  it(`should get the data from the sheets with the header:
+  [cpf,nome,Abono constitucional de 1/3 de férias (R$),Indenização de férias (R$),Antecipação de férias (R$),Gratificação natalina (R$),Antecipação de gratificação natalina (R$),Substituição (R$),Gratificação por exercício cumulativo (R$),Gratificação por encargo Curso/Concurso (R$),Pagamentos retroativos (R$),JETON (R$),Outra (R$),Detalhe,Outra (R$),Detalhe,Total de Direitos Eventuais]"`,
+    async () => {
+      const expectedData = [
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome1", abono_contitucional_de_1_3_de_ferias: 11, indenizacao_de_ferias: 21, antecipacao_de_ferias: 31, gratificacao_natalina: 41, antecipacao_de_gratificacao_natalina: 51, substituicao: 61, gratificacao_por_exercicio_cumulativo: 71, gratificacao_por_encargo_curso_concurso: 81, pagamento_em_retroativos: 91, jeton: 11, direitos_eventuais_outras: 0, direitos_eventuais_detalhes: '', total_de_direitos_eventuais: 470 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome2", abono_contitucional_de_1_3_de_ferias: 12, indenizacao_de_ferias: 22, antecipacao_de_ferias: 32, gratificacao_natalina: 42, antecipacao_de_gratificacao_natalina: 52, substituicao: 62, gratificacao_por_exercicio_cumulativo: 72, gratificacao_por_encargo_curso_concurso: 82, pagamento_em_retroativos: 92, jeton: 12, direitos_eventuais_outras: 0, direitos_eventuais_detalhes: 'a | b', total_de_direitos_eventuais: 480 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome3", abono_contitucional_de_1_3_de_ferias: 13, indenizacao_de_ferias: 23, antecipacao_de_ferias: 33, gratificacao_natalina: 43, antecipacao_de_gratificacao_natalina: 53, substituicao: 63, gratificacao_por_exercicio_cumulativo: 73, gratificacao_por_encargo_curso_concurso: 83, pagamento_em_retroativos: 93, jeton: 13, direitos_eventuais_outras: 3, direitos_eventuais_detalhes: 'ab | cd', total_de_direitos_eventuais: 493 },
+        { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", abono_contitucional_de_1_3_de_ferias: 14, indenizacao_de_ferias: 24, antecipacao_de_ferias: 34, gratificacao_natalina: 44, antecipacao_de_gratificacao_natalina: 54, substituicao: 64, gratificacao_por_exercicio_cumulativo: 74, gratificacao_por_encargo_curso_concurso: 84, pagamento_em_retroativos: 94, jeton: 14, direitos_eventuais_outras: 4.2, direitos_eventuais_detalhes: 'detalhe one | detalhe two', total_de_direitos_eventuais: 504.2 },
+      ];
+      await testDireitosEventuaisData(DIREITOS_EVENTUAIS_HEADER_1, expectedData);
+    });
 });

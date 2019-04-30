@@ -197,6 +197,51 @@ const _getIndenizacoesData = spreadSheet => {
 };
 
 /**
+ * Get the direitosEventuais data from the spreadsheet.
+ * 
+ * @param {Object} spreadSheet the whole spreadsheet object.
+ * 
+ * @returns {[Object]} the spreadsheet data.
+ */
+const _getDireitosEventuaisData = spreadSheet => {
+  const sheetkey = 'direitos_eventuais';
+  const fixedColsSize = 13;
+  const sheet = _getSheet(DIREITOS_EVENTUAIS_KEYWORD, spreadSheet);
+
+  const outraCols = _getOutraAndDetalheColumns(sheet, sheetkey, fixedColsSize);
+
+  const direitosEventuaisModel = [
+    { fieldName: 'cpf', type: 'text' },
+    { fieldName: 'nome', type: 'text' },
+    { fieldName: 'abono_contitucional_de_1_3_de_ferias', type: 'number' },
+    { fieldName: 'indenizacao_de_ferias', type: 'number' },
+    { fieldName: 'antecipacao_de_ferias', type: 'number' },
+    { fieldName: 'gratificacao_natalina', type: 'number' },
+    { fieldName: 'antecipacao_de_gratificacao_natalina', type: 'number' },
+    { fieldName: 'substituicao', type: 'number' },
+    { fieldName: 'gratificacao_por_exercicio_cumulativo', type: 'number' },
+    { fieldName: 'gratificacao_por_encargo_curso_concurso', type: 'number' },
+    { fieldName: 'pagamento_em_retroativos', type: 'number' },
+    { fieldName: 'jeton', type: 'number' },
+    ...outraCols,
+    { fieldName: 'total_de_direitos_eventuais', type: 'number' },
+  ];
+
+  const sheetData = _getSheetData(direitosEventuaisModel, sheet);
+
+  return sheetData.map(sheetLineObj => {
+    const direitos_eventuais_outras = _joinOutraColumns(sheetLineObj);
+    const direitos_eventuais_detalhes = _joinDetalheColumns(sheetLineObj);
+    const filteredLineObj = _filterOutraAndDetalheColumns(sheetLineObj);
+    return {
+      ...filteredLineObj,
+      direitos_eventuais_outras,
+      direitos_eventuais_detalhes
+    };
+  });
+};
+
+/**
  * Returns an array with the header values.
  * 
  * @param {Array} sheet the sheet that contains the header. 
@@ -293,5 +338,5 @@ const parse = spreadsheet => {
 module.exports = {
   parse, _getHeaderLine, _getSheet, _getSheetData, _getContrachequeData, _getSubsidioData,
   _cleanData, _getHeader, _getOutraAndDetalheColumns, _joinOutraColumns, _joinDetalheColumns,
-  _filterOutraAndDetalheColumns, _getIndenizacoesData
+  _filterOutraAndDetalheColumns, _getIndenizacoesData, _getDireitosEventuaisData
 };
