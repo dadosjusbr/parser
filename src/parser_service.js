@@ -1,8 +1,10 @@
 const http = require('http');
+const httpStatus = require('http-status');
+const jsonexport = require('jsonexport');
 const xlsxService = require('./xlsx_service');
 const APIError = require('./api_error');
 const errorMessages = require('./error_messages');
-const httpStatus = require('http-status');
+const { parse } = require('./parser');
 
 /**
  * Fetch the spreadsheet from the given url.
@@ -10,7 +12,7 @@ const httpStatus = require('http-status');
  * @param {string} url - spreadsheet url.
  * @return {Promise<Buffer>} - Promise containing the buffered spreadsheet data. 
  */
-const _fetchSpreadshet = url => 
+const _fetchSpreadshet = url =>
   new Promise((resolve, reject) => {
     http.get(url, res => {
       const data = [];
@@ -23,22 +25,32 @@ const _fetchSpreadshet = url =>
         resolve(Buffer.concat(data));
       });
     })
-    .on('error', err => {
-      const {message, code} = errorMessages.FETCH_SPREADSHEET_ERROR(err, url);
-      reject(new APIError(message, httpStatus.BAD_REQUEST, code, err.stack));
-    });
+      .on('error', err => {
+        const { message, code } = errorMessages.FETCH_SPREADSHEET_ERROR(err, url);
+        reject(new APIError(message, httpStatus.BAD_REQUEST, code, err.stack));
+      });
   });
 
 const getParsedSpreadsheet = async (req, res, next) => {
-  const { spreadsheetUrl } = req.query;
+  const { spreadsheetUrl, headless } = req.query;
   try {
     //TODO: validate spreadsheet url properly;
     if (!spreadsheetUrl) throw new APIError('Invalid spreadsheet url!', httpStatus.BAD_REQUEST);
+    
     const spreadSheetBuffer = await _fetchSpreadshet(spreadsheetUrl);
     const spreadSheet = xlsxService.convertSpreadsheetToJson(spreadSheetBuffer);
-    
-    res.set('Content-Type', 'text/csv');
-    res.status(200).send('this will be a csv file');
+    const spreadSheetData = parse(spreadSheet);
+    const csvOptions = {
+      includeHeaders: headless !== 'true'
+    };
+    jsonexport(spreadSheetData, csvOptions, (err, csv) => {
+      if (err) {
+        const { message, code } = errorMessages.JSON_TO_CSV_ERROR(err);
+        throw new APIError(message, httpStatus.INTERNAL_SERVER_ERROR, code);
+      }
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(csv);
+    });
   } catch (e) {
     handleError(e, res);
   }
@@ -46,7 +58,7 @@ const getParsedSpreadsheet = async (req, res, next) => {
 
 const handleError = (err, res) => {
   const status = err instanceof APIError ? err.status : httpStatus.INTERNAL_SERVER_ERROR;
-  
+
   res.status(status).json({
     message: err.message,
     stack: err.stack

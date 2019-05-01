@@ -11,4 +11,8 @@ module.exports = {
     message: `The following error was found when converting the spreadsheet to JSON: [${parsingError}]`,
     code: 3
   }),
+  JSON_TO_CSV_ERROR: error => ({
+    message: `The following error was found when converting the JSON data to CSV: [${error}]`,
+    code: 4
+  }),
 }
