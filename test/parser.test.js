@@ -17,17 +17,6 @@ const { convertSpreadsheetToJson } = require('../src/xlsx_service');
 const errorMessages = require('../src/error_messages');
 const httpStatus = require('http-status');
 
-describe('paser parse', () => {
-  it('shoul throw not implemented error', () => {
-    try {
-      parser.parse();
-      fail('an error should have been thrown');
-    } catch (e) {
-      expect(e.message).toEqual('not implemented yet');
-    }
-  });
-});
-
 describe('parser _getHeaderLine ', () => {
   it('should return undefined if the sheet is empty', () => {
     const emptySheet1 = [],
@@ -201,10 +190,10 @@ describe('parser _getContrachequeData', () => {
     const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
 
     const expectedContrachequeData = [
-      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 41, diarias: 81, direitos_eventuais: 792, direitos_pessoias: 63.5, imposto_de_renda: 31, indenizacoes: 459, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome1", previdencia_publica: 21, remuneracao_do_orgao_de_origem: 71, rendimento_liquido: 1264.5, retencao_por_teto_constitucional: 51, subsidio: 11, total_de__rendimentos: 1325.5, total_de_descontos: 61 },
-      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 42, diarias: 82, direitos_eventuais: 804, direitos_pessoias: 66, imposto_de_renda: 32, indenizacoes: 468, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome2", previdencia_publica: 22, remuneracao_do_orgao_de_origem: 72, rendimento_liquido: 1288, retencao_por_teto_constitucional: 52, subsidio: 12, total_de__rendimentos: 1350, total_de_descontos: 62 },
-      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 43, diarias: 83, direitos_eventuais: 816, direitos_pessoias: 69, imposto_de_renda: 33, indenizacoes: 477, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome3", previdencia_publica: 23, remuneracao_do_orgao_de_origem: 73, rendimento_liquido: 1312, retencao_por_teto_constitucional: 53, subsidio: 13, total_de__rendimentos: 1375, total_de_descontos: 63 },
-      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 44, diarias: 84, direitos_eventuais: 828, direitos_pessoias: 72, imposto_de_renda: 34, indenizacoes: 486, lotacao: "CARTÓRIO ELEITORAL", nome: "nome4", previdencia_publica: 24, remuneracao_do_orgao_de_origem: 74, rendimento_liquido: 1336, retencao_por_teto_constitucional: 54, subsidio: 14, total_de__rendimentos: 1400, total_de_descontos: 64 }
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 41, diarias: 81, direitos_eventuais: 792, direitos_pessoais: 63.5, imposto_de_renda: 31, indenizacoes: 459, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome1", previdencia_publica: 21, remuneracao_do_orgao_de_origem: 71, rendimento_liquido: 1264.5, retencao_por_teto_constitucional: 51, subsidio: 11, total_de__rendimentos: 1325.5, total_de_descontos: 61 },
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 42, diarias: 82, direitos_eventuais: 804, direitos_pessoais: 66, imposto_de_renda: 32, indenizacoes: 468, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome2", previdencia_publica: 22, remuneracao_do_orgao_de_origem: 72, rendimento_liquido: 1288, retencao_por_teto_constitucional: 52, subsidio: 12, total_de__rendimentos: 1350, total_de_descontos: 62 },
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 43, diarias: 83, direitos_eventuais: 816, direitos_pessoais: 69, imposto_de_renda: 33, indenizacoes: 477, lotacao: "CARTÓRIO ELEITORAL", nome: "Nome3", previdencia_publica: 23, remuneracao_do_orgao_de_origem: 73, rendimento_liquido: 1312, retencao_por_teto_constitucional: 53, subsidio: 13, total_de__rendimentos: 1375, total_de_descontos: 63 },
+      { cargo: "Juiz Eleitoral", cpf: "xxx.xxx.xxx-xx", descontos_diversos: 44, diarias: 84, direitos_eventuais: 828, direitos_pessoais: 72, imposto_de_renda: 34, indenizacoes: 486, lotacao: "CARTÓRIO ELEITORAL", nome: "nome4", previdencia_publica: 24, remuneracao_do_orgao_de_origem: 74, rendimento_liquido: 1336, retencao_por_teto_constitucional: 54, subsidio: 14, total_de__rendimentos: 1400, total_de_descontos: 64 }
     ];
 
     expect(parser._getContrachequeData(spreadsheet)).toEqual(expectedContrachequeData);
@@ -643,5 +632,34 @@ describe('parser _getDadosCadastraisData', () => {
       ];
       await testDadosCadastraisData(SIMPLE_DATA_SPREADSHEET_PATH, expectedData);
     });
+});
+
+describe('parser _convertToNameHashTable', () => {
+  it('should convert an sheet into a hash table with the name as key for each line', () => {
+    const sheetMock = [
+      {nome: 'nome1', a: 'a'},
+      {nome: 'nome2', a: 'b'},
+    ];
+    const expectedResult = {
+      nome1: {nome: 'nome1', a: 'a'},
+      nome2: {nome: 'nome2', a: 'b'},
+    };
+
+    expect(parser._convertToNameHashTable(sheetMock)).toEqual(expectedResult);
+  });
+});
+
+describe('parser parse', () => {
+  it('should parse a simple spreadsheet data', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(SIMPLE_DATA_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    const expectedData = [
+      { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome1', cargo: 'Juiz Eleitoral', lotacao: 'CARTÓRIO ELEITORAL', subsidio: 11, direitos_pessoais: 63.5, indenizacoes: 459, direitos_eventuais: 792, total_de__rendimentos: 1325.5,  previdencia_publica: 21, imposto_de_renda: 31, descontos_diversos: 41, retencao_por_teto_constitucional: 51, total_de_descontos: 61, rendimento_liquido: 1264.5, remuneracao_do_orgao_de_origem: 71, diarias: 81, abono_de_permanencia: 11.5, subsidio_outras: 52, subsidio_detalhes: 'asdf1 | qwer1', total_de_direitos_pessoais: 63.5, auxilio_alimentacao: 11, auxilio_pre_escolar: 21, auxilio_saude: 31, auxilio_natalidade: 41, auxilio_moradia: 51, ajuda_de_custo: 61, indenizacoes_outras:243, indenizacoes_detalhes: 'poiu1 | mnbv1 | zxcv1', total_indenizacoes: 459, abono_contitucional_de_1_3_de_ferias: 11, indenizacao_de_ferias:21, antecipacao_de_ferias:31, gratificacao_natalina:41, antecipacao_de_gratificacao_natalina:51, substituicao:61, gratificacao_por_exercicio_cumulativo:71, gratificacao_por_encargo_curso_concurso:81, pagamento_em_retroativos:91, jeton:101, direitos_eventuais_outras:232, direitos_eventuais_detalhes:'Gratificação Eleitoral | fdsa1', total_de_direitos_eventuais: 792, matricula:1, lotacao_de_origem:'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+      { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome2', cargo: 'Juiz Eleitoral', lotacao: 'CARTÓRIO ELEITORAL', subsidio: 12, direitos_pessoais: 66, indenizacoes: 468, direitos_eventuais: 804, total_de__rendimentos: 1350,  previdencia_publica: 22, imposto_de_renda: 32, descontos_diversos: 42, retencao_por_teto_constitucional: 52, total_de_descontos: 62, rendimento_liquido: 1288, remuneracao_do_orgao_de_origem: 72, diarias: 82, abono_de_permanencia: 12, subsidio_outras: 54, subsidio_detalhes: 'asdf2 | qwer2', total_de_direitos_pessoais: 66, auxilio_alimentacao: 12, auxilio_pre_escolar: 22, auxilio_saude: 32, auxilio_natalidade: 42, auxilio_moradia: 52, ajuda_de_custo: 62, indenizacoes_outras:246, indenizacoes_detalhes: 'poiu2 | mnbv2 | zxcv2', total_indenizacoes: 468, abono_contitucional_de_1_3_de_ferias: 12, indenizacao_de_ferias:22, antecipacao_de_ferias:32, gratificacao_natalina:42, antecipacao_de_gratificacao_natalina:52, substituicao:62, gratificacao_por_exercicio_cumulativo:72, gratificacao_por_encargo_curso_concurso:82, pagamento_em_retroativos:92, jeton:102, direitos_eventuais_outras:234, direitos_eventuais_detalhes:'Gratificação Eleitoral | fdsa2', total_de_direitos_eventuais: 804, matricula:2, lotacao_de_origem:'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+      { cpf: 'xxx.xxx.xxx-xx', nome: 'Nome3', cargo: 'Juiz Eleitoral', lotacao: 'CARTÓRIO ELEITORAL', subsidio: 13, direitos_pessoais: 69, indenizacoes: 477, direitos_eventuais: 816, total_de__rendimentos: 1375,  previdencia_publica: 23, imposto_de_renda: 33, descontos_diversos: 43, retencao_por_teto_constitucional: 53, total_de_descontos: 63, rendimento_liquido: 1312, remuneracao_do_orgao_de_origem: 73, diarias: 83, abono_de_permanencia: 13, subsidio_outras: 56, subsidio_detalhes: 'asdf3 | qwer3', total_de_direitos_pessoais: 69, auxilio_alimentacao: 13, auxilio_pre_escolar: 23, auxilio_saude: 33, auxilio_natalidade: 43, auxilio_moradia: 53, ajuda_de_custo: 63, indenizacoes_outras:249, indenizacoes_detalhes: 'poiu3 | mnbv3 | zxcv3', total_indenizacoes: 477, abono_contitucional_de_1_3_de_ferias: 13, indenizacao_de_ferias:23, antecipacao_de_ferias:33, gratificacao_natalina:43, antecipacao_de_gratificacao_natalina:53, substituicao:63, gratificacao_por_exercicio_cumulativo:73, gratificacao_por_encargo_curso_concurso:83, pagamento_em_retroativos:93, jeton:103, direitos_eventuais_outras:236, direitos_eventuais_detalhes:'Gratificação Eleitoral | fsa3',  total_de_direitos_eventuais: 816, matricula:3, lotacao_de_origem:'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+      { cpf: 'xxx.xxx.xxx-xx', nome: 'nome4', cargo: 'Juiz Eleitoral', lotacao: 'CARTÓRIO ELEITORAL', subsidio: 14, direitos_pessoais: 72, indenizacoes: 486, direitos_eventuais: 828, total_de__rendimentos: 1400,  previdencia_publica: 24, imposto_de_renda: 34, descontos_diversos: 44, retencao_por_teto_constitucional: 54, total_de_descontos: 64, rendimento_liquido: 1336, remuneracao_do_orgao_de_origem: 74, diarias: 84, abono_de_permanencia: 14, subsidio_outras: 58, subsidio_detalhes: 'asdf4 | qwer4', total_de_direitos_pessoais: 72, auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras:252, indenizacoes_detalhes: 'poiu4 | mnbv4 | zxcv4', total_indenizacoes: 486, abono_contitucional_de_1_3_de_ferias: 14, indenizacao_de_ferias:24, antecipacao_de_ferias:34, gratificacao_natalina:44, antecipacao_de_gratificacao_natalina:54, substituicao:64, gratificacao_por_exercicio_cumulativo:74, gratificacao_por_encargo_curso_concurso:84, pagamento_em_retroativos:94, jeton:104, direitos_eventuais_outras:238, direitos_eventuais_detalhes:'Gratificação Eleitoral | fdsa4', total_de_direitos_eventuais: 828, matricula:4, lotacao_de_origem:'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem:'Juiz de Direito' },
+    ];
+    expect(parser.parse(spreadsheet)).toEqual(expectedData);
+  });
 });
 
