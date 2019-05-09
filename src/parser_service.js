@@ -31,13 +31,22 @@ const _fetchSpreadshet = url =>
       });
   });
 
-const getParsedSpreadsheet = async (req, res, next) => {
+const parseByUrl = async (req, res, next) => {
   const { spreadsheetUrl, headless } = req.query;
   try {
-    //TODO: validate spreadsheet url properly;
     if (!spreadsheetUrl) throw new APIError('Invalid spreadsheet url!', httpStatus.BAD_REQUEST);
-    
     const spreadSheetBuffer = await _fetchSpreadshet(spreadsheetUrl);
+    req.body = spreadSheetBuffer;
+    next();
+  } catch (e) {
+    handleError(e, res);
+  }
+};
+
+const getParsedSpreadsheet = async (req, res, next) => {
+  const { headless } = req.query;
+  try {
+    const spreadSheetBuffer = req.body;
     const spreadSheet = xlsxService.convertSpreadsheetToJson(spreadSheetBuffer);
     const spreadSheetData = parse(spreadSheet);
     const csvOptions = {
@@ -65,4 +74,4 @@ const handleError = (err, res) => {
   });
 };
 
-module.exports = { getParsedSpreadsheet, _fetchSpreadshet };
+module.exports = { getParsedSpreadsheet, _fetchSpreadshet, parseByUrl };
