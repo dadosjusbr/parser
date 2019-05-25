@@ -15,4 +15,8 @@ module.exports = {
     message: `The following error was found when converting the JSON data to CSV: [${error}]`,
     code: 4
   }),
+  SPREASHEET_DATA_NOT_FOUND: data => ({
+    message: `The following data was not found on the spreadsheet: [${data}]`,
+    code: 5
+  }),
 }
