@@ -19,4 +19,8 @@ module.exports = {
     message: `The following data was not found on the spreadsheet: [${data}]`,
     code: 5
   }),
+  SHEET_NOT_FOUND: sheetName => ({
+    message: `The following sheet was not found on the spreadsheet: [${sheetName}]`,
+    code: 6
+  }),
 }
