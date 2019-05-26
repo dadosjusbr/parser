@@ -110,34 +110,22 @@ module.exports = {
       "description": "Bônus concedido a quem alcançou os requisitos para se aposentar, mas optou por permanecer em atividade"
     },
     {
-      "name": "subsidio_outra1",
-      "title": "Outros recebimentos - Subsídio 1",
-      "type": "number",
-      "description": "Subsídio detalhado na coluna 'subsidio_detalhe1'"
-    },
-    {
-      "name": "subsidio_detalhe1",
-      "title": "Detalhe Outros Recebimentos - Subsídio 1",
-      "type": "string",
-      "description": "Detalha o valor recebido especificado na coluna 'subsidio_outra1'"
-    },
-    {
-      "name": "subsidio_outra2",
-      "title": "Outros recebimentos - Subsídio 2",
-      "type": "number",
-      "description": "Subsídio detalhado na coluna 'subsidio_detalhe2'"
-    },
-    {
-      "name": "subsidio_detalhe2",
-      "title": "Detalhe Outros Recebimentos - Subsídio 2",
-      "type": "string",
-      "description": "Detalha o valor recebido especificado na coluna 'subsidio_outra2'"
-    },
-    {
       "name": "total_de_direitos_pessoais",
       "title": "Total de Direitos Pessoais",
       "type": "number",
       "description": "Somatório de todos os rendimentos de direitos pessoais"
+    },
+    {
+      "name": "subsidio_outras",
+      "title": "Subsídio outras",
+      "type": "number",
+      "description": "Somatório de todos os outros recebimentos da aba de subsídios"
+    },
+    {
+      "name": "subsidio_detalhes",
+      "title": "Detalhe Outros Recebimentos - Subsídio",
+      "type": "string",
+      "description": "Detalha o valor recebido especificado na coluna 'subsidio_outras', onde cada detalhamento estará separado pelo caractere '|'"
     },
     {
       "name": "auxilio_alimentacao",
@@ -176,46 +164,22 @@ module.exports = {
       "description": "Inclui despesas como mudança de cidade do magistrado e auxílios diversos - como bolsa livro"
     },
     {
-      "name": "indenizacoes_outra1",
-      "title": "",
-      "type": "number",
-      "description": ""
-    },
-    {
-      "name": "indenizacoes_detalhe1",
-      "title": "",
-      "type": "string",
-      "description": ""
-    },
-    {
-      "name": "indenizacoes_outra2",
-      "title": "",
-      "type": "number",
-      "description": ""
-    },
-    {
-      "name": "indenizacoes_detalhe2",
-      "title": "",
-      "type": "string",
-      "description": ""
-    },
-    {
-      "name": "indenizacoes_outra3",
-      "title": "",
-      "type": "number",
-      "description": ""
-    },
-    {
-      "name": "indenizacoes_detalhe3",
-      "title": "",
-      "type": "string",
-      "description": ""
-    },
-    {
       "name": "total_indenizacoes",
       "title": "Total de Indenizações",
       "type": "number",
       "description": "Total de rendimentos com indenizações do Magistrado"
+    },
+    {
+      "name": "indenizacoes_outras",
+      "title": "Indenizações outras",
+      "type": "number",
+      "description": "Somatório de todos os outros recebimentos da aba de indenizações"
+    },
+    {
+      "name": "indenizacoes_detalhes",
+      "title": "Detalhe Outros Recebimentos - Indenizações",
+      "type": "string",
+      "description": "Detalha o valor recebido especificado na coluna 'indenizacoes_outras', onde cada detalhamento estará separado pelo caractere '|'"
     },
     {
       "name": "abono_contitucional_de_1_3_de_ferias",
@@ -278,34 +242,22 @@ module.exports = {
       "description": "Gratificação pela participação em reuniões de órgãos de deliberação coletiva da administração centralizada e autárquica"
     },
     {
-      "name": "direitos_eventuais_outra1",
-      "title": "",
-      "type": "number",
-      "description": ""
-    },
-    {
-      "name": "direitos_eventuais_detalhe1",
-      "title": "",
-      "type": "string",
-      "description": ""
-    },
-    {
-      "name": "direitos_eventuais_outra2",
-      "title": "",
-      "type": "number",
-      "description": ""
-    },
-    {
-      "name": "direitos_eventuais_detalhe2",
-      "title": "",
-      "type": "string",
-      "description": ""
-    },
-    {
       "name": "total_de_direitos_eventuais",
       "title": "Total de Direitos Eventuais",
       "type": "number",
       "description": "Total de rendimentos com diretiros eventuais do Magistrado"
+    },
+    {
+      "name": "direitos_eventuais_outras",
+      "title": "Direitos Eventuais outras",
+      "type": "number",
+      "description": "Somatório de todos os outros recebimentos da aba de direitos eventuais"
+    },
+    {
+      "name": "direitos_eventuais_detalhes",
+      "title": "Detalhe Outros Recebimentos - Direitos Eventuais",
+      "type": "string",
+      "description": "Detalha o valor recebido especificado na coluna 'direitos_eventuais_outras', onde cada detalhamento estará separado pelo caractere '|'"
     },
     {
       "name": "matricula",
