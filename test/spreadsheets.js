@@ -11,6 +11,12 @@ module.exports = {
     SIMPLE_DATA_SPREADSHEET_PATH: '/assets/simple_data_spreadsheet.xlsx',
     MISSING_DATA_SPREADSHEET_PATH: '/assets/missing_data_spreadsheet.xlsx',
 
+    MISSING_CONTRACHQUE_SHEET_SPREADSHEET_PATH: '/assets/missing_contracheque_sheet_spreadsheet.xlsx',
+    MISSING_SUBSIDIOS_SHEET_SPREADSHEET_PATH: '/assets/missing_subsidios_sheet_spreadsheet.xlsx',
+    MISSING_INDENIZACOES_SHEET_SPREADSHEET_PATH: '/assets/missing_indenizacoes_sheet_spreadsheet.xlsx',
+    MISSING_DIREITOS_EVENTUAIS_SHEET_SPREADSHEET_PATH: '/assets/missing_direitos_eventuais_sheet_spreadsheet.xlsx',
+    MISSING_DADOS_CADASTRAIS_SHEET_SPREADSHEET_PATH: '/assets/missing_dados_cadastrais_sheet_spreadsheet.xlsx',
+
     SUBSIDIO_HEADERS_1: '/assets/subsidio_headers/header1.xlsx',
     SUBSIDIO_HEADERS_2: '/assets/subsidio_headers/header2.xlsx',
     SUBSIDIO_HEADERS_3: '/assets/subsidio_headers/header3.xlsx',

@@ -2,6 +2,10 @@ const parser = require('../src/parser');
 const {
   getSpreadsheet, SIMPLE_DATA_SPREADSHEET_PATH, MISSING_DATA_SPREADSHEET_PATH,
 
+  MISSING_CONTRACHQUE_SHEET_SPREADSHEET_PATH, MISSING_SUBSIDIOS_SHEET_SPREADSHEET_PATH,
+  MISSING_INDENIZACOES_SHEET_SPREADSHEET_PATH, MISSING_DIREITOS_EVENTUAIS_SHEET_SPREADSHEET_PATH,
+  MISSING_DADOS_CADASTRAIS_SHEET_SPREADSHEET_PATH,
+
   SUBSIDIO_HEADERS_1, SUBSIDIO_HEADERS_2, SUBSIDIO_HEADERS_3, SUBSIDIO_HEADERS_4,
   SUBSIDIO_HEADERS_5, SUBSIDIO_HEADERS_6, SUBSIDIO_HEADERS_7, SUBSIDIO_HEADERS_8,
   SUBSIDIO_HEADERS_9, SUBSIDIO_HEADERS_10, SUBSIDIO_HEADERS_11, SUBSIDIO_HEADERS_12,
@@ -199,6 +203,18 @@ describe('parser _getContrachequeData', () => {
 
     expect(parser._getContrachequeData(spreadsheet)).toEqual(expectedContrachequeData);
   });
+
+  it('should throw an error when contracheque sheet is no found', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(MISSING_CONTRACHQUE_SHEET_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    try {
+      parser._getContrachequeData(spreadsheet);
+      fail('an error should be thrown');
+    } catch (e) {
+      const { message, code } = errorMessages.SHEET_NOT_FOUND('contracheque');
+      expect(e).toEqual(new APIError(message, 404, code));
+    }
+  });
 });
 
 describe('parser _getSubsidioData', () => {
@@ -216,6 +232,18 @@ describe('parser _getSubsidioData', () => {
       { abono_de_permanencia: 14, cpf: "xxx.xxx.xxx-xx", nome: "nome4", subsidio_detalhes: "asdf4 | qwer4", subsidio_outras: 58, total_de_direitos_pessoais: 72 }
     ];
     testSubsidioData(SIMPLE_DATA_SPREADSHEET_PATH, simpleSubsidioData);
+  });
+
+  it('should throw an error when subsidios sheet is no found', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(MISSING_SUBSIDIOS_SHEET_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    try {
+      parser._getSubsidioData(spreadsheet);
+      fail('an error should be thrown');
+    } catch (e) {
+      const { message, code } = errorMessages.SHEET_NOT_FOUND('subsidios');
+      expect(e).toEqual(new APIError(message, 404, code));
+    }
   });
 
   describe('parser _getSubsidioData with diferent headers', () => {
@@ -475,6 +503,18 @@ describe('parser _getIndenizacoesData', () => {
     { cpf: "xxx.xxx.xxx-xx", nome: "Nome4", auxilio_alimentacao: 14, auxilio_pre_escolar: 24, auxilio_saude: 34, auxilio_natalidade: 44, auxilio_moradia: 54, ajuda_de_custo: 64, indenizacoes_outras: 3.6, indenizacoes_detalhes: 'detalhe one | detalhe two | detalhe three', total_indenizacoes: 237.6 }
   ];
 
+  it('should throw an error when indenizacoes sheet is no found', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(MISSING_INDENIZACOES_SHEET_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    try {
+      parser._getIndenizacoesData(spreadsheet);
+      fail('an error should be thrown');
+    } catch (e) {
+      const { message, code } = errorMessages.SHEET_NOT_FOUND('indenizações');
+      expect(e).toEqual(new APIError(message, 404, code));
+    }
+  });
+
   it(`should get the data from the sheets with the header: 
       ["cpf","nome","Auxílio-alimentação (R$)","Auxílio Pré-escolar (R$)","Auxílio Saúde (R$)", "Auxílio Natalidade (R$)","Auxílio Moradia (R$)","Ajuda de Custo (R$)","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Outra (R$)","Detalhe","Total Indenizações"]`,
     async () => {
@@ -615,6 +655,18 @@ describe('parser _getDireitosEventuaisData', () => {
       ];
       await testDireitosEventuaisData(DIREITOS_EVENTUAIS_HEADER_1, expectedData);
     });
+
+  it('should throw an error when direitos eventuais sheet is no found', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(MISSING_DIREITOS_EVENTUAIS_SHEET_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    try {
+      parser._getDireitosEventuaisData(spreadsheet);
+      fail('an error should be thrown');
+    } catch (e) {
+      const { message, code } = errorMessages.SHEET_NOT_FOUND('direitos eventuais');
+      expect(e).toEqual(new APIError(message, 404, code));
+    }
+  });
 });
 
 describe('parser _getDadosCadastraisData', () => {
@@ -632,6 +684,18 @@ describe('parser _getDadosCadastraisData', () => {
       { cpf: 'xxx.xxx.xxx-xx', nome: 'nome4', matricula: 4, lotacao_de_origem: 'Juiz Eleitoral', orgao_de_origem: 'TJRN', cargo_de_origem: 'Juiz de Direito' },
     ];
     await testDadosCadastraisData(SIMPLE_DATA_SPREADSHEET_PATH, expectedData);
+  });
+
+  it('should throw an error when dados cadastrais sheet is no found', async () => {
+    const spreadsheetBuffer = await getSpreadsheet(MISSING_DADOS_CADASTRAIS_SHEET_SPREADSHEET_PATH);
+    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
+    try {
+      parser._getDadosCadastraisData(spreadsheet);
+      fail('an error should be thrown');
+    } catch (e) {
+      const { message, code } = errorMessages.SHEET_NOT_FOUND('dados cadastrais');
+      expect(e).toEqual(new APIError(message, 404, code));
+    }
   });
 });
 

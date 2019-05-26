@@ -79,6 +79,13 @@ const _getSheetData = (sheetModel, sheet) => {
       }, {}));
 };
 
+const checkEmptySheet = (sheet, sheetName) => {
+  if (sheet.length === 0) {
+    const { message, code } = errorMessages.SHEET_NOT_FOUND(sheetName);
+    throw new APIError(message, httpStatus.NOT_FOUND, code);
+  }
+}
+
 /**
  * Get the contracheque data from the spreadsheet.
  * 
@@ -107,9 +114,10 @@ const _getContrachequeData = spreadSheet => {
     { fieldName: 'diarias', type: 'number' }
   ];
 
-  //TODO: throw an error if the sheet isnt in the spreadsheet????
+  const sheet = _getSheet(CONTRACHEQUE_KEYWORD, spreadSheet);
+  checkEmptySheet(sheet, 'contracheque');
 
-  return _getSheetData(contrachequeModel, _getSheet(CONTRACHEQUE_KEYWORD, spreadSheet));
+  return _getSheetData(contrachequeModel, sheet);
 };
 
 
@@ -184,7 +192,9 @@ const _getMesReferencia = contrachequeSheet => {
 const _getSubsidioData = spreadSheet => {
   const sheetKey = 'subsidio';
   const fixedColsSize = 4;
+
   const sheet = _getSheet(SUBSIDIO_KEYWORD, spreadSheet);
+  checkEmptySheet(sheet, 'subsidios');
 
   const outraCols = _getOutraAndDetalheColumns(sheet, sheetKey, fixedColsSize);
 
@@ -195,8 +205,6 @@ const _getSubsidioData = spreadSheet => {
     ...outraCols,
     { fieldName: 'total_de_direitos_pessoais', type: 'number' },
   ];
-
-  //TODO: throw an error if the sheet isnt in the spreadsheet????
 
   const sheetData = _getSheetData(subsidioModel, sheet);
 
@@ -222,7 +230,10 @@ const _getSubsidioData = spreadSheet => {
 const _getIndenizacoesData = spreadSheet => {
   const sheetkey = 'indenizacoes';
   const fixedColsSize = 9;
+
   const sheet = _getSheet(INDENIZACOES_KEYWORD, spreadSheet);
+  checkEmptySheet(sheet, 'indenizações');
+
   const headerSize = _getHeader(sheet).length;
   if (headerSize < fixedColsSize) {
     const { message, code } = errorMessages.HEADER_SIZE_ERROR(fixedColsSize, headerSize, sheetkey);
@@ -268,7 +279,9 @@ const _getIndenizacoesData = spreadSheet => {
 const _getDireitosEventuaisData = spreadSheet => {
   const sheetkey = 'direitos_eventuais';
   const fixedColsSize = 13;
+
   const sheet = _getSheet(DIREITOS_EVENTUAIS_KEYWORD, spreadSheet);
+  checkEmptySheet(sheet, 'direitos eventuais');
 
   const outraCols = _getOutraAndDetalheColumns(sheet, sheetkey, fixedColsSize);
 
@@ -320,7 +333,10 @@ const _getDadosCadastraisData = spreadSheet => {
     { fieldName: 'cargo_de_origem', type: 'text' },
   ];
 
-  return _getSheetData(dadosCadastraisModel, _getSheet(DADOS_CADASTRAIS_KEYWORD, spreadSheet));
+  const sheet = _getSheet(DADOS_CADASTRAIS_KEYWORD, spreadSheet)
+  checkEmptySheet(sheet, 'dados cadastrais');
+
+  return _getSheetData(dadosCadastraisModel, sheet);
 };
 
 /**
