@@ -125,7 +125,7 @@ const _getOrgao = contrachequeSheet => {
   let orgao = "";
   const orgaoLabel = "Órgão";
   const found = contrachequeSheet.some(line => {
-    if (line[0] && line[0].trim() === orgaoLabel) {
+    if (line[0] && isNaN(line[0]) && line[0].trim() === orgaoLabel) {
       orgao = line.reduce((acc, el) => {
         return !!el ? el : acc;
       }, "");
@@ -332,11 +332,7 @@ const _getDadosCadastraisData = spreadSheet => {
     { fieldName: 'orgao_de_origem', type: 'text' },
     { fieldName: 'cargo_de_origem', type: 'text' },
   ];
-
-  const sheet = _getSheet(DADOS_CADASTRAIS_KEYWORD, spreadSheet)
-  checkEmptySheet(sheet, 'dados cadastrais');
-
-  return _getSheetData(dadosCadastraisModel, sheet);
+  return _getSheetData(dadosCadastraisModel, _getSheet(DADOS_CADASTRAIS_KEYWORD, spreadSheet));
 };
 
 /**

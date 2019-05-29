@@ -685,18 +685,6 @@ describe('parser _getDadosCadastraisData', () => {
     ];
     await testDadosCadastraisData(SIMPLE_DATA_SPREADSHEET_PATH, expectedData);
   });
-
-  it('should throw an error when dados cadastrais sheet is no found', async () => {
-    const spreadsheetBuffer = await getSpreadsheet(MISSING_DADOS_CADASTRAIS_SHEET_SPREADSHEET_PATH);
-    const spreadsheet = convertSpreadsheetToJson(spreadsheetBuffer);
-    try {
-      parser._getDadosCadastraisData(spreadsheet);
-      fail('an error should be thrown');
-    } catch (e) {
-      const { message, code } = errorMessages.SHEET_NOT_FOUND('dados cadastrais');
-      expect(e).toEqual(new APIError(message, 404, code));
-    }
-  });
 });
 
 describe('parser _convertToNameHashTable', () => {
