@@ -103,7 +103,7 @@ const _getContrachequeData = spreadSheet => {
     { fieldName: 'direitos_pessoais', type: 'number' },
     { fieldName: 'indenizacoes', type: 'number' },
     { fieldName: 'direitos_eventuais', type: 'number' },
-    { fieldName: 'total_de__rendimentos', type: 'number' },
+    { fieldName: 'total_de_rendimentos', type: 'number' },
     { fieldName: 'previdencia_publica', type: 'number' },
     { fieldName: 'imposto_de_renda', type: 'number' },
     { fieldName: 'descontos_diversos', type: 'number' },
