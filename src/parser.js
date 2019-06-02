@@ -18,7 +18,7 @@ const CONTRACHEQUE_KEYWORD = 'contracheque',
  * @param {Array} sheet 
  */
 const _getHeaderLine = sheet => {
-  const headerKeywords = ['cpf', 'nome'];
+  const headerKeywords = ['cpf'];
   const foundHeaderLine = sheet.reduce((headerLine, line, lineNumber) => {
     const isHeader = line.length >= headerKeywords.length && headerKeywords.every((key, index) =>
       !!line[index] && containsSubstring(line[index], key));
@@ -347,7 +347,7 @@ const _getHeader = sheet => {
     header[0] = 'cpf';
     header[1] = 'nome';
     let afterEmptyCol = false;
-    const cleanHeader = [...header].filter(col => {
+    const cleanHeader = !header ? [] : [...header].filter(col => {
       if (!col) { afterEmptyCol = true };
       return !afterEmptyCol;
     });
