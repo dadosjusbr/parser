@@ -38,7 +38,7 @@ describe('parser _getHeaderLine ', () => {
     const sheetMock = [
       ['anything', 'anything2'],
       ['otherstuff', 'anything2'],
-      ['cpf', 'notName'],
+      ['asdf', 'notName'],
       ['not the word above', 'nome']
     ];
     expect(parser._getHeaderLine(sheetMock)).toBe(undefined);
