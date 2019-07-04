@@ -1,5 +1,10 @@
 module.exports = {
   "version": "1",
+  "licenses": [{
+    "name": "CC-BY-SA-4.0",
+    "title": "Creative Commons Attribution Share-Alike 4.0",
+    "path": "https://creativecommons.org/licenses/by-sa/4.0/",
+  }],
   "fields": [
     {
       "name": "CPF",
